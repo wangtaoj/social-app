@@ -36,7 +36,3 @@ spring:
           log-slow-sql: true
           slow-sql-log-level: WARN
           slow-sql-millis: 1000
-  cloud:
-    nacos:
-      discovery:
-        service:
