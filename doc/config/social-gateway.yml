@@ -1,0 +1,7 @@
+spring:
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          # 此配置在配置中心修改后不会实时生效, 需要重启应用
+          enabled: true
