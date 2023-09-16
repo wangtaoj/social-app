@@ -96,6 +96,19 @@
     </dependencies>
   </dependencyManagement>
 
+  <profiles>
+    <profile>
+      <id>dev</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <properties>
+        <profiles.active>dev</profiles.active>
+        <nacos.namespace>1dab4474-cbfe-4d1d-ad46-d41c8683bf51</nacos.namespace>
+      </properties>
+    </profile>
+  </profiles>
+
   <build>
     <resources>
       <resource>
