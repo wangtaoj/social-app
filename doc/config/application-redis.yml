@@ -1,0 +1,13 @@
+spring:
+  redis:
+    host: ${redis.host}
+    port: ${redis.port}
+    password: ${redis.password}
+    connect-timeout: 5000
+    timeout: 30000
+    jedis:
+      pool:
+        max-active: 50
+        max-idle: 50
+        max-wait: 60000
+        min-idle: 10

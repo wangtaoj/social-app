@@ -13,6 +13,7 @@
   <packaging>pom</packaging>
   <modules>
     <module>social-common-core</module>
+    <module>social-common-redis</module>
   </modules>
 
   <dependencies>
