@@ -10,8 +10,8 @@ import com.wangtao.social.common.core.exception.BusinessException;
 import com.wangtao.social.common.core.util.AssertUtils;
 import com.wangtao.social.user.domain.SysUser;
 import com.wangtao.social.user.enums.SmsCaptchaUseTypeEnum;
-import com.wangtao.social.user.vo.RegisterRequestVO;
-import com.wangtao.social.user.vo.SmsCaptchaSendVO;
+import com.wangtao.social.user.dto.RegisterDTO;
+import com.wangtao.social.user.dto.SmsCaptchaDTO;
 import constant.AuthCacheConstant;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,18 +51,18 @@ public class AuthService {
         return base64;
     }
 
-    public void sendSmsCaptcha(SmsCaptchaSendVO smsCaptchaSend) {
-        AssertUtils.assertNotEmpty(smsCaptchaSend.getSendSmsType(), "使用类型不能为空!");
-        if (SmsCaptchaUseTypeEnum.REGISTER.getType().equals(smsCaptchaSend.getSendSmsType())) {
-            validSmsCaptchaForRegister(smsCaptchaSend);
+    public void sendSmsCaptcha(SmsCaptchaDTO smsCaptcha) {
+        AssertUtils.assertNotEmpty(smsCaptcha.getSendSmsType(), "使用类型不能为空!");
+        if (SmsCaptchaUseTypeEnum.REGISTER.getType().equals(smsCaptcha.getSendSmsType())) {
+            validSmsCaptchaForRegister(smsCaptcha);
         }
         String code = RandomUtil.randomNumbers(4);
         log.info("手机验证码: {}", code);
-        String key = RedisKeyUtils.getSmsCaptchaKey(smsCaptchaSend.getPhone(), code);
+        String key = RedisKeyUtils.getSmsCaptchaKey(smsCaptcha.getPhone(), code);
         redisTemplate.opsForValue().set(key, code, AuthCacheConstant.SMS_CAPTCHA_KEY_EXPIRED_TIME);
     }
 
-    private void validSmsCaptchaForRegister(SmsCaptchaSendVO smsCaptchaSend) {
+    private void validSmsCaptchaForRegister(SmsCaptchaDTO smsCaptchaSend) {
         AssertUtils.assertNotEmpty(smsCaptchaSend.getPhone(), "手机号不能为空!");
         AssertUtils.assertNotEmpty(smsCaptchaSend.getCode(), "图形验证码不能为空!");
 
@@ -87,21 +87,21 @@ public class AuthService {
         }
     }
 
-    public void register(RegisterRequestVO registerRequest) {
+    public void register(RegisterDTO registerDTO) {
         // 验证短信验证码
-        String smsCaptchaKey = RedisKeyUtils.getSmsCaptchaKey(registerRequest.getPhone(), registerRequest.getSmsCode());
+        String smsCaptchaKey = RedisKeyUtils.getSmsCaptchaKey(registerDTO.getPhone(), registerDTO.getSmsCode());
         checkKey(smsCaptchaKey, "短信验证码不正确或失效!");
 
         // 检查手机号是否存在
-        SysUser sysUserDb = sysUserService.selectByPhone(registerRequest.getPhone());
+        SysUser sysUserDb = sysUserService.selectByPhone(registerDTO.getPhone());
         if (Objects.nonNull(sysUserDb)) {
             throw new BusinessException(ResponseEnum.PHONE_REGISTERED);
         }
 
         // 保存用户
         SysUser sysUser = new SysUser();
-        sysUser.setPhone(registerRequest.getPhone());
-        sysUser.setPassword(MD5.create().digestHex(registerRequest.getPassword()));
+        sysUser.setPhone(registerDTO.getPhone());
+        sysUser.setPassword(MD5.create().digestHex(registerDTO.getPassword()));
         sysUserService.insert(sysUser);
     }
 }

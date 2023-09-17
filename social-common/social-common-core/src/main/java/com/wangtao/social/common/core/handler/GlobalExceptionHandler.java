@@ -6,10 +6,12 @@ import com.wangtao.social.common.core.response.ServerResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Objects;
 
 /**
  * @author wangtao
@@ -31,5 +33,17 @@ public class GlobalExceptionHandler {
         log.error("{} encounter a error.", request.getServletPath(), e);
         ServerResponse<?> serverResponse = ServerResponse.error(e);
         return new ResponseEntity<>(serverResponse, e.getResponseEnum().getHttpStatus());
+    }
+
+    /**
+     * 参数校验异常
+     */
+    @ExceptionHandler(BindException.class)
+    public ResponseEntity<ServerResponse<?>> bindException(BindException e, HttpServletRequest request) {
+        log.error("{} encounter a error.", request.getServletPath(), e);
+        // 取第一个错误的信息
+        String errMsg = Objects.requireNonNull(e.getFieldError()).getDefaultMessage();
+        ServerResponse<?> serverResponse = ServerResponse.error(ResponseEnum.PARAM_ILLEGAL, errMsg);
+        return new ResponseEntity<>(serverResponse, ResponseEnum.PARAM_ILLEGAL.getHttpStatus());
     }
 }

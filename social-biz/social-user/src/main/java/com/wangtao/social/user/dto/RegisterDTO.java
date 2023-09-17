@@ -1,6 +1,8 @@
-package com.wangtao.social.user.vo;
+package com.wangtao.social.user.dto;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 import javax.validation.constraints.NotBlank;
 
@@ -8,8 +10,10 @@ import javax.validation.constraints.NotBlank;
  * @author wangtao
  * Created at 2023-09-17
  */
-@Data
-public class RegisterRequestVO {
+@Getter
+@Setter
+@ToString
+public class RegisterDTO {
 
     /**
      * 电话

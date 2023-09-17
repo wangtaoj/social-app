@@ -1,7 +1,10 @@
-package com.wangtao.social.user.vo;
+package com.wangtao.social.user.dto;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
+
+import javax.validation.constraints.NotBlank;
 
 /**
  * @author wangtao
@@ -9,20 +12,24 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class SmsCaptchaSendVO {
+@ToString
+public class SmsCaptchaDTO {
 
     /**
      * 电话
      */
+    @NotBlank(message = "手机号码不能为空")
     private String phone;
 
     /**
      * 图形验证码
      */
+    @NotBlank(message = "图形验证码不能为空")
     private String code;
 
     /**
      * 使用类型
      */
+    @NotBlank(message = "使用类型不能为空")
     private String sendSmsType;
 }
