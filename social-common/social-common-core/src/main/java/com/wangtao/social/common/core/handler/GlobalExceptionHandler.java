@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
 import java.util.Objects;
 
 /**
@@ -37,12 +39,28 @@ public class GlobalExceptionHandler {
 
     /**
      * 参数校验异常
+     * 校验注解写在bean对象中的字段上
      */
     @ExceptionHandler(BindException.class)
     public ResponseEntity<ServerResponse<?>> bindException(BindException e, HttpServletRequest request) {
         log.error("{} encounter a error.", request.getServletPath(), e);
         // 取第一个错误的信息
         String errMsg = Objects.requireNonNull(e.getFieldError()).getDefaultMessage();
+        ServerResponse<?> serverResponse = ServerResponse.error(ResponseEnum.PARAM_ILLEGAL, errMsg);
+        return new ResponseEntity<>(serverResponse, ResponseEnum.PARAM_ILLEGAL.getHttpStatus());
+    }
+
+    /**
+     * 参数校验异常
+     * 校验注解直接写在Controller方法参数上
+     * 此时@Validated注解需要写到类上面才会去校验
+     */
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<ServerResponse<?>> constraintViolationException(ConstraintViolationException e,
+                                                                          HttpServletRequest request) {
+        log.error("{} encounter a error.", request.getServletPath(), e);
+        // 取第一个错误的信息
+        String errMsg = e.getConstraintViolations().stream().map(ConstraintViolation::getMessage).findFirst().orElse(null);
         ServerResponse<?> serverResponse = ServerResponse.error(ResponseEnum.PARAM_ILLEGAL, errMsg);
         return new ResponseEntity<>(serverResponse, ResponseEnum.PARAM_ILLEGAL.getHttpStatus());
     }

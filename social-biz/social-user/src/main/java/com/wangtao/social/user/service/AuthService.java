@@ -7,11 +7,10 @@ import cn.hutool.core.util.RandomUtil;
 import cn.hutool.crypto.digest.MD5;
 import com.wangtao.social.common.core.enums.ResponseEnum;
 import com.wangtao.social.common.core.exception.BusinessException;
-import com.wangtao.social.common.core.util.AssertUtils;
 import com.wangtao.social.user.domain.SysUser;
-import com.wangtao.social.user.enums.SmsCaptchaUseTypeEnum;
 import com.wangtao.social.user.dto.RegisterDTO;
 import com.wangtao.social.user.dto.SmsCaptchaDTO;
+import com.wangtao.social.user.enums.SmsCaptchaUseTypeEnum;
 import constant.AuthCacheConstant;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,7 +51,6 @@ public class AuthService {
     }
 
     public void sendSmsCaptcha(SmsCaptchaDTO smsCaptcha) {
-        AssertUtils.assertNotEmpty(smsCaptcha.getSendSmsType(), "使用类型不能为空!");
         if (SmsCaptchaUseTypeEnum.REGISTER.getType().equals(smsCaptcha.getSendSmsType())) {
             validSmsCaptchaForRegister(smsCaptcha);
         }
@@ -63,9 +61,6 @@ public class AuthService {
     }
 
     private void validSmsCaptchaForRegister(SmsCaptchaDTO smsCaptchaSend) {
-        AssertUtils.assertNotEmpty(smsCaptchaSend.getPhone(), "手机号不能为空!");
-        AssertUtils.assertNotEmpty(smsCaptchaSend.getCode(), "图形验证码不能为空!");
-
         // 检查手机号是否存在
         SysUser sysUser = sysUserService.selectByPhone(smsCaptchaSend.getPhone());
         if (Objects.nonNull(sysUser)) {
