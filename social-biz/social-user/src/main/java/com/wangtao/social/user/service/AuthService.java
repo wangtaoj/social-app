@@ -3,12 +3,21 @@ package com.wangtao.social.user.service;
 import cn.hutool.captcha.CaptchaUtil;
 import cn.hutool.captcha.LineCaptcha;
 import cn.hutool.captcha.generator.RandomGenerator;
+import cn.hutool.core.util.RandomUtil;
+import com.wangtao.social.common.core.enums.ResponseEnum;
+import com.wangtao.social.common.core.exception.BusinessException;
+import com.wangtao.social.common.core.util.AssertUtils;
+import com.wangtao.social.user.domain.SysUser;
+import com.wangtao.social.user.enums.SmsCaptchaUseTypeEnum;
+import com.wangtao.social.user.vo.SmsCaptchaSendVO;
 import constant.AuthCacheConstant;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import util.RedisKeyUtils;
+
+import java.util.Objects;
 
 /**
  * @author wangtao
@@ -20,6 +29,9 @@ public class AuthService {
 
     @Autowired
     private StringRedisTemplate redisTemplate;
+
+    @Autowired
+    private SysUserService sysUserService;
 
     public String getCaptcha() {
         // 生成图形验证码
@@ -36,4 +48,37 @@ public class AuthService {
         redisTemplate.opsForValue().set(RedisKeyUtils.getCaptchaKey(code), code, AuthCacheConstant.CAPTCHA_KEY_EXPIRED_TIME);
         return base64;
     }
+
+    public void sendSmsCaptcha(SmsCaptchaSendVO smsCaptchaSend) {
+        AssertUtils.assertNotEmpty(smsCaptchaSend.getSendSmsType(), "使用类型不能为空!");
+        if (SmsCaptchaUseTypeEnum.REGISTER.getType().equals(smsCaptchaSend.getSendSmsType())) {
+            validSmsCaptchaForRegister(smsCaptchaSend);
+        }
+        String code = RandomUtil.randomNumbers(4);
+        log.info("手机验证码: {}", code);
+        String key = RedisKeyUtils.getSmsCaptchaKey(smsCaptchaSend.getPhone(), code);
+        redisTemplate.opsForValue().set(key, code, AuthCacheConstant.SMS_CAPTCHA_KEY_EXPIRED_TIME);
+    }
+
+    private void validSmsCaptchaForRegister(SmsCaptchaSendVO smsCaptchaSend) {
+        AssertUtils.assertNotEmpty(smsCaptchaSend.getPhone(), "手机号不能为空!");
+        AssertUtils.assertNotEmpty(smsCaptchaSend.getCode(), "图形验证码不能为空!");
+
+        // 检查手机号是否存在
+        SysUser sysUser = sysUserService.selectByPhone(smsCaptchaSend.getPhone());
+        if (Objects.nonNull(sysUser)) {
+            throw new BusinessException(ResponseEnum.PHONE_REGISTERED);
+        }
+
+        // 验证图形验证码
+        String captchaKey = RedisKeyUtils.getCaptchaKey(smsCaptchaSend.getCode());
+        Boolean isExist = redisTemplate.hasKey(captchaKey);
+        if (isExist != null && isExist) {
+            // 立即删除, 不等待key过期
+            redisTemplate.delete(captchaKey);
+        } else {
+            throw new BusinessException(ResponseEnum.AUTH_FAIL, "图形验证码不正确或失效!");
+        }
+    }
+
 }

@@ -24,6 +24,14 @@ public class ServerResponse<T> {
         this.data = data;
     }
 
+    public static ServerResponse<Void> success() {
+        return new ServerResponse<>(ResponseEnum.SUCCESS.getCode(), null, null);
+    }
+
+    public static ServerResponse<Void> successByMsg(String msg) {
+        return new ServerResponse<>(ResponseEnum.SUCCESS.getCode(), msg, null);
+    }
+
     public static <T> ServerResponse<T> success(T data) {
         return new ServerResponse<>(ResponseEnum.SUCCESS.getCode(), null, data);
     }

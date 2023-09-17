@@ -13,8 +13,11 @@ public enum ResponseEnum {
 
     SYS_ERROR("E0000001", "系统错误"),
 
-    PARAM_ILLEGAL("E0000002", "参数不合法", HttpStatus.BAD_REQUEST)
+    PARAM_ILLEGAL("E0000002", "参数不合法", HttpStatus.BAD_REQUEST),
 
+    AUTH_FAIL("E0010001", "认证失败", HttpStatus.UNAUTHORIZED),
+
+    PHONE_REGISTERED("E0010001", "手机号已注册"),
     ;
 
     private final String code;
