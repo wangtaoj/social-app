@@ -20,4 +20,11 @@
     </plugins>
   </build>
 
+  <dependencies>
+    <dependency>
+      <groupId>cn.hutool</groupId>
+      <artifactId>hutool-captcha</artifactId>
+      <version>5.8.22</version>
+    </dependency>
+  </dependencies>
 </project>
