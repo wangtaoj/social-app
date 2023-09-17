@@ -31,6 +31,7 @@
     <commons-collections4.version>4.4</commons-collections4.version>
     <commons-io.version>2.13.0</commons-io.version>
     <guava.version>30.0-jre</guava.version>
+    <hutool.version>5.8.22</hutool.version>
 
     <!-- 内置插件 -->
     <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
@@ -93,6 +94,18 @@
         <groupId>com.google.guava</groupId>
         <artifactId>guava</artifactId>
         <version>${guava.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>cn.hutool</groupId>
+        <artifactId>hutool-captcha</artifactId>
+        <version>${hutool.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>cn.hutool</groupId>
+        <artifactId>hutool-crypto</artifactId>
+        <version>${hutool.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

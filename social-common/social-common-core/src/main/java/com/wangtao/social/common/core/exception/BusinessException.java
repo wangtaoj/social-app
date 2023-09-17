@@ -8,12 +8,14 @@ import com.wangtao.social.common.core.enums.ResponseEnum;
  */
 public class BusinessException extends SocialException {
 
+    private static final long serialVersionUID = 236410471132246058L;
+
     private final ResponseEnum responseEnum;
 
     private Object data;
 
     public BusinessException(ResponseEnum responseEnum) {
-        this(responseEnum, null);
+        this(responseEnum, (Object) null);
     }
 
     public BusinessException(ResponseEnum responseEnum, Object data) {

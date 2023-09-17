@@ -4,11 +4,13 @@ import cn.hutool.captcha.CaptchaUtil;
 import cn.hutool.captcha.LineCaptcha;
 import cn.hutool.captcha.generator.RandomGenerator;
 import cn.hutool.core.util.RandomUtil;
+import cn.hutool.crypto.digest.MD5;
 import com.wangtao.social.common.core.enums.ResponseEnum;
 import com.wangtao.social.common.core.exception.BusinessException;
 import com.wangtao.social.common.core.util.AssertUtils;
 import com.wangtao.social.user.domain.SysUser;
 import com.wangtao.social.user.enums.SmsCaptchaUseTypeEnum;
+import com.wangtao.social.user.vo.RegisterRequestVO;
 import com.wangtao.social.user.vo.SmsCaptchaSendVO;
 import constant.AuthCacheConstant;
 import lombok.extern.slf4j.Slf4j;
@@ -72,13 +74,34 @@ public class AuthService {
 
         // 验证图形验证码
         String captchaKey = RedisKeyUtils.getCaptchaKey(smsCaptchaSend.getCode());
-        Boolean isExist = redisTemplate.hasKey(captchaKey);
+        checkKey(captchaKey, "图形验证码不正确或失效!");
+    }
+
+    private void checkKey(String key, String errMsg) {
+        Boolean isExist = redisTemplate.hasKey(key);
         if (isExist != null && isExist) {
             // 立即删除, 不等待key过期
-            redisTemplate.delete(captchaKey);
+            redisTemplate.delete(key);
         } else {
-            throw new BusinessException(ResponseEnum.AUTH_FAIL, "图形验证码不正确或失效!");
+            throw new BusinessException(ResponseEnum.AUTH_FAIL, errMsg);
         }
     }
 
+    public void register(RegisterRequestVO registerRequest) {
+        // 验证短信验证码
+        String smsCaptchaKey = RedisKeyUtils.getSmsCaptchaKey(registerRequest.getPhone(), registerRequest.getSmsCode());
+        checkKey(smsCaptchaKey, "短信验证码不正确或失效!");
+
+        // 检查手机号是否存在
+        SysUser sysUserDb = sysUserService.selectByPhone(registerRequest.getPhone());
+        if (Objects.nonNull(sysUserDb)) {
+            throw new BusinessException(ResponseEnum.PHONE_REGISTERED);
+        }
+
+        // 保存用户
+        SysUser sysUser = new SysUser();
+        sysUser.setPhone(registerRequest.getPhone());
+        sysUser.setPassword(MD5.create().digestHex(registerRequest.getPassword()));
+        sysUserService.insert(sysUser);
+    }
 }

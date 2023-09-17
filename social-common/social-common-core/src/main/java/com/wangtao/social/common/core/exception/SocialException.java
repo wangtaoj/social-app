@@ -6,6 +6,8 @@ package com.wangtao.social.common.core.exception;
  */
 public class SocialException extends RuntimeException {
 
+    private static final long serialVersionUID = 4431532607960940275L;
+
     public SocialException() {
         super();
     }

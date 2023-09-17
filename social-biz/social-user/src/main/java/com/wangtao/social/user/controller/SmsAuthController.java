@@ -2,6 +2,7 @@ package com.wangtao.social.user.controller;
 
 import com.wangtao.social.common.core.response.ServerResponse;
 import com.wangtao.social.user.service.AuthService;
+import com.wangtao.social.user.vo.RegisterRequestVO;
 import com.wangtao.social.user.vo.SmsCaptchaSendVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -36,6 +37,18 @@ public class SmsAuthController {
     @PostMapping("/sendSmsCaptcha")
     public ServerResponse<Void> sendSmsCaptcha(@RequestBody SmsCaptchaSendVO smsCaptchaSend) {
         authService.sendSmsCaptcha(smsCaptchaSend);
+        return ServerResponse.success();
+    }
+
+    /**
+     * 用户注册
+     *
+     * @param registerRequest 请求参数
+     * @return 空返回值
+     */
+    @PostMapping("/register")
+    public ServerResponse<Void> register(@RequestBody RegisterRequestVO registerRequest) {
+        authService.register(registerRequest);
         return ServerResponse.success();
     }
 }

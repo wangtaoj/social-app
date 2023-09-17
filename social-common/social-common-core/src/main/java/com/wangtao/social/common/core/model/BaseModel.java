@@ -1,7 +1,9 @@
 package com.wangtao.social.common.core.model;
 
+import com.baomidou.mybatisplus.annotation.TableField;
+
 import java.io.Serializable;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 /**
  * @author wangtao
@@ -9,29 +11,32 @@ import java.time.LocalDate;
  */
 public class BaseModel implements Serializable {
 
+    @TableField(exist = false)
+    private static final long serialVersionUID = 4998006182663556267L;
+
     /**
      * 创建时间
      */
-    private LocalDate createTime;
+    private LocalDateTime createTime;
 
     /**
      * 修改时间
      */
-    private LocalDate updateTime;
+    private LocalDateTime updateTime;
 
-    public LocalDate getCreateTime() {
+    public LocalDateTime getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(LocalDate createTime) {
+    public void setCreateTime(LocalDateTime createTime) {
         this.createTime = createTime;
     }
 
-    public LocalDate getUpdateTime() {
+    public LocalDateTime getUpdateTime() {
         return updateTime;
     }
 
-    public void setUpdateTime(LocalDate updateTime) {
+    public void setUpdateTime(LocalDateTime updateTime) {
         this.updateTime = updateTime;
     }
 
