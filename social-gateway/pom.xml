@@ -51,6 +51,12 @@
       <groupId>org.springframework.cloud</groupId>
       <artifactId>spring-cloud-starter-bootstrap</artifactId>
     </dependency>
+
+    <!-- API网关聚合 -->
+    <dependency>
+      <groupId>com.github.xiaoymin</groupId>
+      <artifactId>knife4j-gateway-spring-boot-starter</artifactId>
+    </dependency>
   </dependencies>
 
 </project>
