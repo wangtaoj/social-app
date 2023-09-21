@@ -4,6 +4,8 @@
 
   <!--声明一个变量, 代表日志文件的根目录 -->
   <property name="LOG_HOME" value="${user.home}/logs/social-app/${log.dir:-other}"/>
+  <!-- 日志归档目录 -->
+  <property name="LOG_ARCHIVE_DIR" value="${LOG_HOME}/archive"/>
   <!-- 日志文件最多保留多少天 -->
   <property name="MAX_HISTORY" value="10"/>
   <!-- 单个文件最大大小 -->
@@ -15,7 +17,7 @@
   <conversionRule conversionWord="wEx" converterClass="org.springframework.boot.logging.logback.ExtendedWhitespaceThrowableProxyConverter" />
   <!-- Spring Boot彩色日志格式 -->
   <property name="LOG_CONSOLE_PATTERN" value="${LOG_CONSOLE_PATTERN:-%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}}"/>
-  <property name="LOG_FILE_PATTERN" value="%date{yyyy-MM-dd HH:mm:ss.SSS} [%-5p] --- [%t][%c{40}] : %m%n"/>
+  <property name="LOG_FILE_PATTERN" value="%date{yyyy-MM-dd HH:mm:ss.SSS} [%5p] [%t] %X{requestId} %c{40}.%method : %m%n"/>
 
   <!--输出到控制台 -->
   <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
@@ -42,7 +44,7 @@
     <file>${LOG_HOME}/debug.log</file>
     <!-- 将日志按时间打包压缩, 单个文件超出指定大小后, 写到新的文件, 索引从0开始 -->
     <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-      <fileNamePattern>${LOG_HOME}/debug-%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+      <fileNamePattern>${LOG_ARCHIVE_DIR}/%d{yyyyMMdd}/debug-%d{yyyyMMdd}.%i.log.gz</fileNamePattern>
       <maxHistory>${MAX_HISTORY}</maxHistory>
       <maxFileSize>${MAX_FILE_SIZE}</maxFileSize>
     </rollingPolicy>
@@ -60,7 +62,7 @@
     <file>${LOG_HOME}/info.log</file>
     <!-- 将日志按时间打包压缩, 单个文件超出指定大小后, 写到新的文件, 索引从0开始 -->
     <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-      <fileNamePattern>${LOG_HOME}/info-%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+      <fileNamePattern>${LOG_ARCHIVE_DIR}/%d{yyyyMMdd}/info-%d{yyyyMMdd}.%i.log.gz</fileNamePattern>
       <maxHistory>${MAX_HISTORY}</maxHistory>
       <maxFileSize>${MAX_FILE_SIZE}</maxFileSize>
     </rollingPolicy>
@@ -80,7 +82,7 @@
     <file>${LOG_HOME}/error.log</file>
     <!-- 将日志按时间打包压缩, 单个文件超出指定大小后, 写到新的文件, 索引从0开始 -->
     <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-      <fileNamePattern>${LOG_HOME}/error-%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+      <fileNamePattern>${LOG_ARCHIVE_DIR}/%d{yyyyMMdd}/error-%d{yyyyMMdd}.%i.log.gz</fileNamePattern>
       <maxHistory>${MAX_HISTORY}</maxHistory>
       <maxFileSize>${MAX_FILE_SIZE}</maxFileSize>
     </rollingPolicy>
