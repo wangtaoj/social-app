@@ -6,12 +6,15 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 import org.slf4j.MDC;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 /**
  * @author wangtao
  * Created at 2023-09-21
  */
+@Order(Ordered.HIGHEST_PRECEDENCE + 10)
 @Aspect
 @Component
 public class RequestLogAspect {
