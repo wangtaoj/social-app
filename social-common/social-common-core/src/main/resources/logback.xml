@@ -4,7 +4,8 @@
 
   <!--声明一个变量, 代表日志文件的根目录 -->
   <property name="LOG_HOME" value="${user.home}/logs/social-app/${log.dir:-other}"/>
-  <property name="LOG_ARCHIVE_DIR" value="${LOG_HOME}/archive" />
+  <!-- 日志归档目录 -->
+  <property name="LOG_ARCHIVE_DIR" value="${LOG_HOME}/archive"/>
   <!-- 日志文件最多保留多少天 -->
   <property name="MAX_HISTORY" value="10"/>
   <!-- 单个文件最大大小 -->
