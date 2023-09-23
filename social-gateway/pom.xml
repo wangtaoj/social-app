@@ -13,6 +13,18 @@
 
   <dependencies>
     <dependency>
+      <groupId>com.wangtao</groupId>
+      <artifactId>social-common-core</artifactId>
+      <version>${social-app.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.wangtao</groupId>
+      <artifactId>social-common-redis</artifactId>
+      <version>${social-app.version}</version>
+    </dependency>
+
+    <dependency>
       <groupId>org.springframework.cloud</groupId>
       <artifactId>spring-cloud-starter-gateway</artifactId>
     </dependency>

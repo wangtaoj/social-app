@@ -21,6 +21,7 @@ spring:
           - data-id: application-${spring.profiles.active}.yml
             refresh: true
           - data-id: application-common.yml
+          - data-id: application-redis.yml
         username: ${spring.cloud.nacos.discovery.username}
         password: ${spring.cloud.nacos.discovery.password}
 
