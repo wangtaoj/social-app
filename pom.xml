@@ -10,7 +10,6 @@
   <packaging>pom</packaging>
   <modules>
     <module>social-common</module>
-    <module>social-base-pom</module>
     <module>social-biz</module>
     <module>social-gateway</module>
   </modules>
