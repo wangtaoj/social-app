@@ -2,7 +2,6 @@ package com.wangtao.social.common.core.config;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.json.JsonWriteFeature;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.wangtao.social.common.core.util.JavaTimeModuleUtils;
@@ -33,14 +32,13 @@ public class JacksonCustomizer implements Jackson2ObjectMapperBuilderCustomizer 
          * 4. 序列化时包含所有字段
          * 5. 在序列化一个空对象时时不抛出异常
          * 6. 忽略反序列化时在json字符串中存在, 但在java对象中不存在的属性
-         * 7. 数字序列化成字符穿且调用BigDecimal.toPlainString()方法
+         * 7. BigDecimal.toPlainString()方法, 这样不会有科学计数法
          */
         builder.simpleDateFormat(JavaTimeModuleUtils.STANDARD_PATTERN)
                 .modules(javaTimeModule, new Jdk8Module())
                 .serializationInclusion(JsonInclude.Include.ALWAYS)
                 .failOnEmptyBeans(false)
                 .failOnUnknownProperties(false)
-                .featuresToEnable(JsonGenerator.Feature.WRITE_BIGDECIMAL_AS_PLAIN)
-                .featuresToEnable(JsonWriteFeature.WRITE_NUMBERS_AS_STRINGS.mappedFeature());
+                .featuresToEnable(JsonGenerator.Feature.WRITE_BIGDECIMAL_AS_PLAIN);
     }
 }
