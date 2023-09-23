@@ -1,4 +1,4 @@
-package com.wangtao.social.gateway.dto;
+package com.wangtao.social.common.core.session;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -11,7 +11,7 @@ import lombok.ToString;
 @ToString
 @Setter
 @Getter
-public class SimpleUserDTO {
+public class SessionUser {
 
     /**
      * 主键id
@@ -27,4 +27,10 @@ public class SimpleUserDTO {
      * 昵称
      */
     private String nickName;
+
+    /**
+     * 性别
+     */
+    private Integer sex;
+
 }

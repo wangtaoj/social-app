@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.wangtao.social.common.core.model.BaseModel;
 import lombok.Getter;
 import lombok.Setter;
@@ -36,6 +37,7 @@ public class SysUser extends BaseModel implements Serializable {
     /**
      * 密码
      */
+    @JsonIgnore
     private String password;
 
     /**
