@@ -36,5 +36,5 @@ public interface AuthCacheConstant {
     /**
      * session过期时间
      */
-    Duration SESSION_KEY_EXPIRED_TIME = Duration.ofMinutes(10);
+    Duration SESSION_KEY_EXPIRED_TIME = Duration.ofMinutes(30);
 }
