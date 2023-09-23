@@ -1,4 +1,4 @@
-package constant;
+package com.wangtao.social.common.redis.constant;
 
 import java.time.Duration;
 

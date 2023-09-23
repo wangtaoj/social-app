@@ -11,12 +11,12 @@ import com.wangtao.social.user.domain.SysUser;
 import com.wangtao.social.user.dto.RegisterDTO;
 import com.wangtao.social.user.dto.SmsCaptchaDTO;
 import com.wangtao.social.user.enums.SmsCaptchaUseTypeEnum;
-import constant.AuthCacheConstant;
+import com.wangtao.social.common.redis.constant.AuthCacheConstant;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
-import util.RedisKeyUtils;
+import com.wangtao.social.common.redis.util.RedisKeyUtils;
 
 import java.util.Objects;
 

@@ -1,6 +1,6 @@
-package util;
+package com.wangtao.social.common.redis.util;
 
-import constant.AuthCacheConstant;
+import com.wangtao.social.common.redis.constant.AuthCacheConstant;
 
 /**
  * @author wangtao
