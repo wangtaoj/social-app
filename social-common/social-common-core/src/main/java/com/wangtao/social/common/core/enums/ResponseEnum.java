@@ -20,6 +20,8 @@ public enum ResponseEnum {
     PHONE_REGISTERED("E0010002", "手机号已注册"),
 
     PHONE_UNREGISTERED("E0010003", "手机号还未注册"),
+
+    NO_PERMISSION("E0010004", "您没有权限访问"),
     ;
 
     private final String code;
