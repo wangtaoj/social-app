@@ -1,6 +1,5 @@
 package com.wangtao.social.common.core.util;
 
-import com.alibaba.druid.support.json.JSONUtils;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -41,7 +40,7 @@ public class JsonUtils {
     private static final String DATE_PATTERN = "yyyy-MM-dd";
     private static final String TIME_PATTERN = "HH:mm:ss";
 
-    private static final Logger LOG = LoggerFactory.getLogger(JSONUtils.class);
+    private static final Logger LOG = LoggerFactory.getLogger(JsonUtils.class);
 
     static {
 
