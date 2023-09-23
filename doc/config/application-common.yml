@@ -34,3 +34,10 @@ spring:
           log-slow-sql: true
           slow-sql-log-level: WARN
           slow-sql-millis: 1000
+
+mybatis-plus:
+  global-config:
+    db-config:
+      logicDeleteField: delFlg
+      logic-delete-value: 1
+      logic-not-delete-value: 0
