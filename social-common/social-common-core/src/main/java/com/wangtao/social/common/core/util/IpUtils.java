@@ -3,6 +3,8 @@ package com.wangtao.social.common.core.util;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 
+import java.net.Inet4Address;
+
 /**
  * @author wangtao
  * Created at 2023-09-23
@@ -24,7 +26,9 @@ public final class IpUtils {
             return realIp;
         }
         if (request.getRemoteAddress() != null) {
-            return request.getRemoteAddress().getHostString();
+            if (request.getRemoteAddress().getAddress() instanceof Inet4Address) {
+                return request.getRemoteAddress().getHostString();
+            }
         }
         return request.getURI().getHost();
     }

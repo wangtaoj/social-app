@@ -88,12 +88,7 @@ public class AuthGlobalFilter implements GlobalFilter {
             }
         }
         Set<String> blackIps = gatewayProperties.getBlackIds();
-        for (String blackIp : blackIps) {
-            if (blackIp.equals(requestIp)) {
-                return true;
-            }
-        }
-        return false;
+        return blackIps.contains(requestIp);
     }
 
     private Mono<Void> sendError(ServerHttpResponse resp, Exception e) {
@@ -109,6 +104,7 @@ public class AuthGlobalFilter implements GlobalFilter {
         }
         resp.getHeaders().setContentType(MediaType.APPLICATION_JSON);
         String returnStr = JsonUtils.objToJson(serverResponse);
+        assert returnStr != null;
         DataBuffer buffer = resp.bufferFactory().wrap(returnStr.getBytes(StandardCharsets.UTF_8));
         return resp.writeWith(Flux.just(buffer));
     }
