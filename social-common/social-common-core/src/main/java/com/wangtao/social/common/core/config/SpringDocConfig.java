@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Configuration;
  * @author wangtao
  * Created at 2023-09-10
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 public class SpringDocConfig {
 
     @ConditionalOnMissingBean

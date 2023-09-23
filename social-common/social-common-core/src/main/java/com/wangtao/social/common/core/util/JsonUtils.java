@@ -100,10 +100,10 @@ public class JsonUtils {
             if (object != null) {
                 return objectMapper.writeValueAsString(object);
             }
+            return null;
         } catch (JsonProcessingException e) {
-            LOG.error("parse {} to json error!", object, e);
+            throw new IllegalArgumentException(String.format("parse %s to json error", object), e);
         }
-        return null;
     }
 
     /**

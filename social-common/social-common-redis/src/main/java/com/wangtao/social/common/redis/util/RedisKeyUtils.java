@@ -31,4 +31,14 @@ public final class RedisKeyUtils {
     public static String getSmsCaptchaKey(String phone, String code) {
         return AuthCacheConstant.SMS_CAPTCHA_KEY + phone + ":" + code;
     }
+
+    /**
+     * 获取Session key
+     *
+     * @param token 手机
+     * @return Session key
+     */
+    public static String getSessionKey(String token) {
+        return AuthCacheConstant.SESSION_KEY + token;
+    }
 }

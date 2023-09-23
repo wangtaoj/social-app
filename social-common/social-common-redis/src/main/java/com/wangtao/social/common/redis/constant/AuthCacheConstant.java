@@ -27,4 +27,14 @@ public interface AuthCacheConstant {
      * 手机验证码超时时间
      */
     Duration SMS_CAPTCHA_KEY_EXPIRED_TIME = Duration.ofMinutes(10);
+
+    /**
+     * session key
+     */
+    String SESSION_KEY = GlobalCacheConstant.SYS_GLOBAL_KEY + "session:";
+
+    /**
+     * session过期时间
+     */
+    Duration SESSION_KEY_EXPIRED_TIME = Duration.ofMinutes(10);
 }

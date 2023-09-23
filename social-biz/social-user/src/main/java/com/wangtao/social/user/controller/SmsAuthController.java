@@ -1,9 +1,11 @@
 package com.wangtao.social.user.controller;
 
 import com.wangtao.social.common.core.response.ServerReponseDecorator;
+import com.wangtao.social.user.dto.LoginDTO;
 import com.wangtao.social.user.dto.RegisterDTO;
 import com.wangtao.social.user.dto.SmsCaptchaDTO;
 import com.wangtao.social.user.service.AuthService;
+import com.wangtao.social.user.validator.AuthValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -48,5 +50,27 @@ public class SmsAuthController {
     @PostMapping("/register")
     public void register(@Validated @RequestBody RegisterDTO registerDTO) {
         authService.register(registerDTO);
+    }
+
+    /**
+     * 根据手机号码+短信验证码登录
+     *
+     * @param loginDTO 登录参数
+     * @return 登录token
+     */
+    @PostMapping("/loginBySmsCode")
+    public String loginBySmsCode(@Validated({AuthValidator.BySmsCode.class}) @RequestBody LoginDTO loginDTO) {
+        return authService.loginBySmsCode(loginDTO);
+    }
+
+    /**
+     * 根据手机号码+密码登录
+     *
+     * @param loginDTO 登录参数
+     * @return 登录token
+     */
+    @PostMapping("/loginByPassword")
+    public String loginByPassword(@Validated({AuthValidator.ByPassword.class}) @RequestBody LoginDTO loginDTO) {
+        return authService.loginByPassword(loginDTO);
     }
 }

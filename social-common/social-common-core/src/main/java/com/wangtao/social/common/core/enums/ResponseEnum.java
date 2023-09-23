@@ -17,7 +17,9 @@ public enum ResponseEnum {
 
     AUTH_FAIL("E0010001", "认证失败", HttpStatus.UNAUTHORIZED),
 
-    PHONE_REGISTERED("E0010001", "手机号已注册"),
+    PHONE_REGISTERED("E0010002", "手机号已注册"),
+
+    PHONE_UNREGISTERED("E0010003", "手机号还未注册"),
     ;
 
     private final String code;
