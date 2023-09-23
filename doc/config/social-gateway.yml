@@ -19,3 +19,17 @@ knife4j:
     discover:
       enabled: true
       version: openapi3
+
+social:
+  gateway:
+    exact-ignore-urls:
+      - "/doc.html"
+      - "/v3/api-docs/swagger-config"
+      - "/v3/api-docs"
+      - "/v3/api-docs/default"
+      - "/swagger-ui/index.html"
+      - "/auth/getCaptcha"
+      - "/auth/sendSmsCaptcha"
+      - "/auth/register"
+      - "/auth/loginBySmsCode"
+      - "/auth/loginByPassword"

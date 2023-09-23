@@ -65,7 +65,7 @@ public class AuthGlobalFilter implements GlobalFilter {
             authHandler.auth(token);
             return chain.filter(exchange);
         } catch (Exception e) {
-            log.error("认证失败", e);
+            log.error("认证失败, 请求url: {}", requestUrl, e);
             return sendError(resp, e);
         }
     }
