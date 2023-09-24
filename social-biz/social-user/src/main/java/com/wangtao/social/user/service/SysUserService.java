@@ -6,7 +6,9 @@ import com.wangtao.social.common.core.enums.ResponseEnum;
 import com.wangtao.social.common.core.exception.BusinessException;
 import com.wangtao.social.common.core.session.SessionUserHolder;
 import com.wangtao.social.common.redis.util.RedisKeyUtils;
+import com.wangtao.social.user.converter.UserConverter;
 import com.wangtao.social.user.domain.SysUser;
+import com.wangtao.social.user.dto.UserDTO;
 import com.wangtao.social.user.mapper.SysUserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -27,6 +29,9 @@ public class SysUserService {
     @Autowired
     private SysUserMapper sysUserMapper;
 
+    @Autowired
+    private UserConverter userConverter;
+
     public SysUser selectByPhone(String phone) {
         Wrapper<SysUser> queryWrapper = new LambdaQueryWrapper<SysUser>()
                 .eq(SysUser::getPhone, phone);
@@ -46,5 +51,11 @@ public class SysUserService {
         if (delete == null || !delete) {
             throw new BusinessException(ResponseEnum.LOGOUT_FAIL);
         }
+    }
+
+    public UserDTO info() {
+        Long id = SessionUserHolder.getSessionUser().getId();
+        SysUser sysUser = sysUserMapper.selectById(id);
+        return userConverter.convertToDTO(sysUser);
     }
 }

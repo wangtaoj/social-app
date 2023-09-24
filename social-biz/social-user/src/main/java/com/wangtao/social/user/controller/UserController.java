@@ -4,6 +4,7 @@ import com.wangtao.social.common.core.enums.ResponseEnum;
 import com.wangtao.social.common.core.exception.BusinessException;
 import com.wangtao.social.common.core.response.ServerReponseDecorator;
 import com.wangtao.social.common.core.session.SessionUserHolder;
+import com.wangtao.social.user.dto.UserDTO;
 import com.wangtao.social.user.service.SysUserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,11 @@ public class UserController {
     @GetMapping("/logout")
     public void logout() {
         sysUserService.logout();
+    }
+
+    @GetMapping("/info")
+    public UserDTO info() {
+        return sysUserService.info();
     }
 
     @GetMapping("/hello")

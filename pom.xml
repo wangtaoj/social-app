@@ -36,6 +36,7 @@
     <guava.version>30.0-jre</guava.version>
     <hutool.version>5.8.22</hutool.version>
     <lombok.version>1.18.24</lombok.version>
+    <mapstruct.version>1.5.5.Final</mapstruct.version>
 
     <!-- 内置插件 -->
     <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
@@ -127,6 +128,12 @@
         <artifactId>hutool-crypto</artifactId>
         <version>${hutool.version}</version>
       </dependency>
+
+      <dependency>
+        <groupId>org.mapstruct</groupId>
+        <artifactId>mapstruct</artifactId>
+        <version>${mapstruct.version}</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
@@ -176,9 +183,19 @@
           <configuration>
             <annotationProcessorPaths>
               <path>
+                <groupId>org.mapstruct</groupId>
+                <artifactId>mapstruct-processor</artifactId>
+                <version>${mapstruct.version}</version>
+              </path>
+              <path>
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
                 <version>${lombok.version}</version>
+              </path>
+              <path>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok-mapstruct-binding</artifactId>
+                <version>0.2.0</version>
               </path>
               <path>
                 <groupId>com.github.therapi</groupId>
