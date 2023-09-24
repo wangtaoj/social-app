@@ -10,8 +10,10 @@ import com.wangtao.social.user.converter.UserConverter;
 import com.wangtao.social.user.domain.SysUser;
 import com.wangtao.social.user.dto.UserDTO;
 import com.wangtao.social.user.mapper.SysUserMapper;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -31,6 +33,9 @@ public class SysUserService {
 
     @Autowired
     private UserConverter userConverter;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     public SysUser selectByPhone(String phone) {
         Wrapper<SysUser> queryWrapper = new LambdaQueryWrapper<SysUser>()
@@ -57,5 +62,20 @@ public class SysUserService {
         Long id = SessionUserHolder.getSessionUser().getId();
         SysUser sysUser = sysUserMapper.selectById(id);
         return userConverter.convertToDTO(sysUser);
+    }
+
+    public void updateInfo(UserDTO user) {
+        SysUser updateUser = userConverter.convert(user);
+        updateUser.setId(SessionUserHolder.getSessionUser().getId());
+        if (StringUtils.isNotBlank(user.getPassword())) {
+            updateUser.setPassword(passwordEncoder.encode(user.getPassword()));
+        } else {
+            // 防止空字符串
+            updateUser.setPassword(null);
+        }
+        int updateCount = sysUserMapper.updateById(updateUser);
+        if (updateCount == 0) {
+            throw new BusinessException(ResponseEnum.SYS_ERROR, "用户信息不存在, 更新异常!");
+        }
     }
 }

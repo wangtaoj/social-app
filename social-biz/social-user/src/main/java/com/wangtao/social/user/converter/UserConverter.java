@@ -14,4 +14,6 @@ import org.mapstruct.ReportingPolicy;
 public interface UserConverter {
 
     UserDTO convertToDTO(SysUser sysUser);
+
+    SysUser convert(UserDTO user);
 }

@@ -118,10 +118,10 @@ public class JsonUtils {
             if (json != null && json.length() > 0) {
                 return objectMapper.readValue(json, cls);
             }
+            return null;
         } catch (IOException e) {
-            LOG.error("parse {} to object error!", json, e);
+            throw new IllegalArgumentException(String.format("parse %s to obj error", json), e);
         }
-        return null;
     }
 
     /**

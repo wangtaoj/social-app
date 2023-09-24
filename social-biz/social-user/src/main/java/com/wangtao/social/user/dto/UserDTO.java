@@ -1,13 +1,17 @@
 package com.wangtao.social.user.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+
+import javax.validation.constraints.NotBlank;
 
 /**
  * @author wangtao
  * Created at 2023-09-24
  */
+@JsonIgnoreProperties(value = {"password"}, allowSetters = true)
 @ToString
 @Setter
 @Getter
@@ -21,7 +25,13 @@ public class UserDTO {
     /**
      * 电话
      */
+    @NotBlank(message = "电话号码不能为空")
     private String phone;
+
+    /**
+     * 密码
+     */
+    private String password;
 
     /**
      * 头像
@@ -31,22 +41,8 @@ public class UserDTO {
     /**
      * 昵称
      */
+    @NotBlank(message = "用户昵称不能为空")
     private String nickName;
-
-    /**
-     *
-     */
-    private String openid;
-
-    /**
-     *
-     */
-    private String sessionKey;
-
-    /**
-     *
-     */
-    private String unionid;
 
     /**
      * 性别，0女1男
