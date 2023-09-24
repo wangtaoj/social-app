@@ -21,6 +21,10 @@ public class SessionUserHolder {
         return sessionUser;
     }
 
+    public static String getToken() {
+        return getSessionUser().getToken();
+    }
+
     static void set(SessionUser sessionUser) {
         SESSION.set(Objects.requireNonNull(sessionUser));
     }

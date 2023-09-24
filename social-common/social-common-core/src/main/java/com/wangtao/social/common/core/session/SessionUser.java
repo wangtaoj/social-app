@@ -33,4 +33,9 @@ public class SessionUser {
      */
     private Integer sex;
 
+    /**
+     * 登录token
+     */
+    private String token;
+
 }

@@ -4,8 +4,11 @@ import com.wangtao.social.common.core.enums.ResponseEnum;
 import com.wangtao.social.common.core.exception.BusinessException;
 import com.wangtao.social.common.core.response.ServerReponseDecorator;
 import com.wangtao.social.common.core.session.SessionUserHolder;
+import com.wangtao.social.user.service.SysUserService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
@@ -19,8 +22,20 @@ import java.util.Map;
  */
 @Slf4j
 @ServerReponseDecorator
+@RequestMapping("/user")
 @RestController
 public class UserController {
+
+    @Autowired
+    private SysUserService sysUserService;
+
+    /**
+     * 用户登出
+     */
+    @GetMapping("/logout")
+    public void logout() {
+        sysUserService.logout();
+    }
 
     @GetMapping("/hello")
     public Map<String, Object> hello() {

@@ -36,6 +36,7 @@ public class SessionUserInterceptor implements HandlerInterceptor {
         if (StringUtils.isNotBlank(token)) {
             SessionUser sessionUser = getSessionUser(token);
             if (Objects.nonNull(sessionUser)) {
+                sessionUser.setToken(token);
                 SessionUserHolder.set(sessionUser);
             }
         }

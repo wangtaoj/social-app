@@ -22,6 +22,8 @@ public enum ResponseEnum {
     PHONE_UNREGISTERED("E0010003", "手机号还未注册"),
 
     NO_PERMISSION("E0010004", "您没有权限访问"),
+
+    LOGOUT_FAIL("E0010005", "用户登出失败"),
     ;
 
     private final String code;
