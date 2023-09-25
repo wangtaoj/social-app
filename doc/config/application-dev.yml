@@ -8,3 +8,10 @@ redis:
   host: 127.0.0.1
   port: 6379
   password: 123456
+
+minio:
+  # 必须要加上http
+  endpoint: "http://127.0.0.1:9000"
+  access-key: LhulnOUakqQPuuPf6u3R
+  secret-key: adSFdJU6qojXTQXzYjNYG5BdoLsZ2DBpf7mEjpgi
+  default-bucket: social-app
