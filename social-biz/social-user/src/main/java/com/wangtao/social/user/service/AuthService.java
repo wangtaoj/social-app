@@ -135,7 +135,7 @@ public class AuthService {
 
         String token = UuidUtils.uuid();
         String sessionKey = RedisKeyUtils.getSessionKey(token);
-        redisTemplate.opsForValue().set(sessionKey, Objects.requireNonNull(JsonUtils.objToJson(sysUser)),
+        redisTemplate.opsForValue().set(sessionKey, JsonUtils.objToJson(sysUser),
                 AuthCacheConstant.SESSION_KEY_EXPIRED_TIME);
         return token;
     }
@@ -154,7 +154,7 @@ public class AuthService {
 
         String token = UuidUtils.uuid();
         String sessionKey = RedisKeyUtils.getSessionKey(token);
-        redisTemplate.opsForValue().set(sessionKey, Objects.requireNonNull(JsonUtils.objToJson(sysUser)),
+        redisTemplate.opsForValue().set(sessionKey, JsonUtils.objToJson(sysUser),
                 AuthCacheConstant.SESSION_KEY_EXPIRED_TIME);
         return token;
     }

@@ -16,8 +16,6 @@ import com.fasterxml.jackson.datatype.jsr310.deser.LocalTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalTimeSerializer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -25,7 +23,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -39,8 +37,6 @@ public class JsonUtils {
     private static final String STANDARD_PATTERN = "yyyy-MM-dd HH:mm:ss";
     private static final String DATE_PATTERN = "yyyy-MM-dd";
     private static final String TIME_PATTERN = "HH:mm:ss";
-
-    private static final Logger LOG = LoggerFactory.getLogger(JsonUtils.class);
 
     static {
 
@@ -95,11 +91,11 @@ public class JsonUtils {
      * @return 返回一个JSON格式的字符串
      */
     public static String objToJson(Object object) {
-        try {
-            if (object != null) {
-                return objectMapper.writeValueAsString(object);
-            }
+        if (object == null) {
             return null;
+        }
+        try {
+            return objectMapper.writeValueAsString(object);
         } catch (JsonProcessingException e) {
             throw new IllegalArgumentException(String.format("parse %s to json error", object), e);
         }
@@ -114,11 +110,11 @@ public class JsonUtils {
      * @return 返回一个T类型的对象
      */
     public static <T> T jsonToObj(String json, Class<T> cls) {
-        try {
-            if (json != null && json.length() > 0) {
-                return objectMapper.readValue(json, cls);
-            }
+        if (json == null || json.length() == 0) {
             return null;
+        }
+        try {
+            return objectMapper.readValue(json, cls);
         } catch (IOException e) {
             throw new IllegalArgumentException(String.format("parse %s to obj error", json), e);
         }
@@ -137,14 +133,14 @@ public class JsonUtils {
      * @return 返回一个Java对象
      */
     public static <T> T jsonToObj(String json, TypeReference<T> typeReference) {
-        try {
-            if (json != null && json.length() > 0) {
-                return objectMapper.readValue(json, typeReference);
-            }
-        } catch (Exception e) {
-            LOG.error("parse {} to object error!", json, e);
+        if (json == null || json.length() == 0) {
+            return null;
         }
-        return null;
+        try {
+            return objectMapper.readValue(json, typeReference);
+        } catch (Exception e) {
+            throw new IllegalArgumentException(String.format("parse %s to obj error", json), e);
+        }
     }
 
     /**
@@ -156,15 +152,14 @@ public class JsonUtils {
      * @return 返回一个List列表
      */
     public static <T> List<T> jsonToList(String json, Class<T> cls) {
-        List<T> list = new ArrayList<>();
-        try {
-            if (json != null && json.length() > 0) {
-                JavaType javaType = objectMapper.getTypeFactory().constructCollectionType(List.class, cls);
-                list = objectMapper.readValue(json, javaType);
-            }
-        } catch (IOException e) {
-            LOG.error("parse {} to object error!", json, e);
+        if (json == null || json.length() == 0) {
+            return Collections.emptyList();
         }
-        return list;
+        try {
+            JavaType javaType = objectMapper.getTypeFactory().constructCollectionType(List.class, cls);
+            return objectMapper.readValue(json, javaType);
+        } catch (IOException e) {
+            throw new IllegalArgumentException(String.format("parse %s to obj error", json), e);
+        }
     }
 }

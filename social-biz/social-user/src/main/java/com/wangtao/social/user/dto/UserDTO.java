@@ -1,6 +1,6 @@
 package com.wangtao.social.user.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -11,7 +11,6 @@ import javax.validation.constraints.NotBlank;
  * @author wangtao
  * Created at 2023-09-24
  */
-@JsonIgnoreProperties(value = {"password"}, allowSetters = true)
 @ToString
 @Setter
 @Getter
@@ -30,7 +29,9 @@ public class UserDTO {
 
     /**
      * 密码
+     * 序列化会忽略该字段，反序列化不会忽略
      */
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
     /**
