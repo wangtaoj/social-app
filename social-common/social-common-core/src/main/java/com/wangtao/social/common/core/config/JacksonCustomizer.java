@@ -2,8 +2,10 @@ package com.wangtao.social.common.core.config;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.wangtao.social.common.core.jackson.BigDecimalSerializer;
 import com.wangtao.social.common.core.util.JavaTimeModuleUtils;
 import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
@@ -25,6 +27,10 @@ public class JacksonCustomizer implements Jackson2ObjectMapperBuilderCustomizer 
         // 初始化JavaTimeModule
         JavaTimeModule javaTimeModule = JavaTimeModuleUtils.create();
 
+        SimpleModule simpleModule = new SimpleModule();
+        // 添加BigDecimal的自定义序列化器
+        simpleModule.addSerializer(new BigDecimalSerializer());
+
         /*
          * 1. java.util.Date yyyy-MM-dd HH:mm:ss
          * 2. 支持JDK8 LocalDateTime、LocalDate、 LocalTime
@@ -35,7 +41,7 @@ public class JacksonCustomizer implements Jackson2ObjectMapperBuilderCustomizer 
          * 7. BigDecimal.toPlainString()方法, 这样不会有科学计数法
          */
         builder.simpleDateFormat(JavaTimeModuleUtils.STANDARD_PATTERN)
-                .modules(javaTimeModule, new Jdk8Module())
+                .modules(javaTimeModule, new Jdk8Module(), simpleModule)
                 .serializationInclusion(JsonInclude.Include.ALWAYS)
                 .failOnEmptyBeans(false)
                 .failOnUnknownProperties(false)

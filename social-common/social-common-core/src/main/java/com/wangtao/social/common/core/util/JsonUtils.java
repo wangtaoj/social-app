@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
@@ -16,6 +17,7 @@ import com.fasterxml.jackson.datatype.jsr310.deser.LocalTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalTimeSerializer;
+import com.wangtao.social.common.core.jackson.BigDecimalSerializer;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -46,23 +48,27 @@ public class JsonUtils {
         // 初始化JavaTimeModule
         JavaTimeModule javaTimeModule = new JavaTimeModule();
 
-        //处理LocalDateTime
+        // 处理LocalDateTime
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(STANDARD_PATTERN);
         javaTimeModule.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer(dateTimeFormatter));
         javaTimeModule.addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer(dateTimeFormatter));
 
-        //处理LocalDate
+        // 处理LocalDate
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(DATE_PATTERN);
         javaTimeModule.addSerializer(LocalDate.class, new LocalDateSerializer(dateFormatter));
         javaTimeModule.addDeserializer(LocalDate.class, new LocalDateDeserializer(dateFormatter));
 
-        //处理LocalTime
+        // 处理LocalTime
         DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern(TIME_PATTERN);
         javaTimeModule.addSerializer(LocalTime.class, new LocalTimeSerializer(timeFormatter));
         javaTimeModule.addDeserializer(LocalTime.class, new LocalTimeDeserializer(timeFormatter));
 
-        //注册时间模块, 支持支持jsr310, 即新的时间类(java.time包下的时间类)
-        objectMapper.registerModule(javaTimeModule);
+        SimpleModule simpleModule = new SimpleModule();
+        // 处理BigDecimal, 序列化时使用字符串
+        simpleModule.addSerializer(new BigDecimalSerializer());
+
+        // 注册模块
+        objectMapper.registerModules(javaTimeModule, simpleModule);
 
         // 注册JDK新增的一些类型, 比如Optional
         objectMapper.registerModule(new Jdk8Module());
