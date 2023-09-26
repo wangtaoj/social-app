@@ -1,4 +1,4 @@
-package com.wangtao.social.user.dto;
+package com.wangtao.social.user.api.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;

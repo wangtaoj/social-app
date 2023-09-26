@@ -1,4 +1,4 @@
-package com.wangtao.social.user.domain;
+package com.wangtao.social.user.po;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;

@@ -2,7 +2,7 @@ package com.wangtao.social.user;
 
 import cn.hutool.core.lang.Assert;
 import com.wangtao.social.common.core.util.JsonUtils;
-import com.wangtao.social.user.dto.UserDTO;
+import com.wangtao.social.user.api.dto.UserDTO;
 import org.junit.jupiter.api.Test;
 
 /**

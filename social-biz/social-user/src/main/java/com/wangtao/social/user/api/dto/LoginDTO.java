@@ -1,4 +1,4 @@
-package com.wangtao.social.user.dto;
+package com.wangtao.social.user.api.dto;
 
 import com.wangtao.social.user.validator.AuthValidator;
 import lombok.Getter;

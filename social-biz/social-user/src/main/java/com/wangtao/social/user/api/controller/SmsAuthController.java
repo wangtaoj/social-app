@@ -1,9 +1,9 @@
-package com.wangtao.social.user.controller;
+package com.wangtao.social.user.api.controller;
 
 import com.wangtao.social.common.core.response.ServerReponseDecorator;
-import com.wangtao.social.user.dto.LoginDTO;
-import com.wangtao.social.user.dto.RegisterDTO;
-import com.wangtao.social.user.dto.SmsCaptchaDTO;
+import com.wangtao.social.user.api.dto.LoginDTO;
+import com.wangtao.social.user.api.dto.RegisterDTO;
+import com.wangtao.social.user.api.dto.SmsCaptchaDTO;
 import com.wangtao.social.user.service.AuthService;
 import com.wangtao.social.user.validator.AuthValidator;
 import org.springframework.beans.factory.annotation.Autowired;

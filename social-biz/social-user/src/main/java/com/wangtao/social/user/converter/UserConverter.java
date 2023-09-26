@@ -1,7 +1,7 @@
 package com.wangtao.social.user.converter;
 
-import com.wangtao.social.user.domain.SysUser;
-import com.wangtao.social.user.dto.UserDTO;
+import com.wangtao.social.user.po.SysUser;
+import com.wangtao.social.user.api.dto.UserDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
 import org.mapstruct.ReportingPolicy;
