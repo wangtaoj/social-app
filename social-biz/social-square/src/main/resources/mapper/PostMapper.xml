@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wangtao.social.square.mapper.PostMapper">
+
+  <resultMap id="BaseResultMap" type="com.wangtao.social.square.po.Post">
+    <id property="id" column="id" jdbcType="BIGINT"/>
+    <result property="userId" column="user_id" jdbcType="BIGINT"/>
+    <result property="content" column="content" jdbcType="VARCHAR"/>
+    <result property="imgUrlList" column="img_url_list" jdbcType="OTHER"
+            typeHandler="com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler"/>
+    <result property="likeCount" column="like_count" jdbcType="INTEGER"/>
+    <result property="delFlg" column="del_flg" jdbcType="TINYINT"/>
+    <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+    <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    id,user_id,content,
+    img_url_list,like_count,del_flg,
+    create_time,update_time
+  </sql>
+</mapper>

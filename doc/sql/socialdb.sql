@@ -16,6 +16,20 @@ CREATE TABLE `sys_user`
     `create_time` datetime,
     `update_time` datetime,
     PRIMARY KEY (`id`),
-    UNIQUE KEY `un_1` (`phone`),
-    UNIQUE KEY `un_2` (`openid`)
+    UNIQUE KEY uk_phone (`phone`),
+    UNIQUE KEY uk_openid (`openid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `ss_post`
+(
+    `id` bigint NOT NULL,
+    `user_id` bigint NOT NULL COMMENT '用户id',
+    `content` text NOT NULL COMMENT '内容',
+    `img_url_list` json DEFAULT NULL COMMENT '图片列表',
+    `like_count` int DEFAULT '0' COMMENT '点赞数',
+    `del_flg` tinyint DEFAULT '0' COMMENT '删除标志',
+    `create_time` datetime COMMENT '创建时间',
+    `update_time` datetime COMMENT '修改时间',
+    PRIMARY KEY (`id`),
+    INDEX idx_user_id (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
