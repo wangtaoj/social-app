@@ -1,4 +1,12 @@
 spring:
+  servlet:
+    multipart:
+      # 单次请求允许传输字节的最大值
+      max-request-size: 100MB
+      # 设置单个文件最大长度
+      max-file-size: 20MB
+      # 当文件达到多少时写入到临时目录, 而不是保留在内存中
+      file-size-threshold: 20MB
   datasource:
     url: jdbc:mysql://${db.host}:${db.port}/socialdb?useUnicode=true&characterEncoding=utf-8&&serverTimezone=Asia/Shanghai
     username: ${db.username}
