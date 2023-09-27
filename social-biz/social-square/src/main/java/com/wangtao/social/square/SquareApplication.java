@@ -8,9 +8,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * Created at 2023-09-26
  */
 @SpringBootApplication
-public class SocialSquareApplication {
+public class SquareApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(SocialSquareApplication.class, args);
+        SpringApplication.run(SquareApplication.class, args);
     }
 }
