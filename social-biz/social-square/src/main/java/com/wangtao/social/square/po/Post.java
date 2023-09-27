@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.wangtao.social.common.core.model.BaseModel;
 import lombok.Getter;
 import lombok.Setter;
@@ -28,6 +29,7 @@ public class Post extends BaseModel {
      * 主键编号
      */
     @TableId(type = IdType.ASSIGN_ID)
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Long id;
 
     /**
