@@ -44,4 +44,14 @@ public class PostController {
     public IPage<PostVO> list(@RequestBody PostQueryDTO postQuery) {
         return postService.list(postQuery);
     }
+
+    /**
+     * 分页查询帖子列表(广场)
+     * @param postQuery 查询参数
+     * @return 帖子列表
+     */
+    @PostMapping("/listMyPost")
+    public IPage<PostVO> listMyPost(@RequestBody PostQueryDTO postQuery) {
+        return postService.list(postQuery);
+    }
 }

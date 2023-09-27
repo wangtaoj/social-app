@@ -24,4 +24,9 @@ public class PostQueryDTO extends PageParam {
      */
     private Long postIdBefore;
 
+    /**
+     * 用户id
+     */
+    private Long userId;
+
 }
