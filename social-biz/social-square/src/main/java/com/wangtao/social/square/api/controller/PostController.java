@@ -46,7 +46,7 @@ public class PostController {
     }
 
     /**
-     * 分页查询帖子列表(广场)
+     * 分页查询自己的帖子列表
      * @param postQuery 查询参数
      * @return 帖子列表
      */
