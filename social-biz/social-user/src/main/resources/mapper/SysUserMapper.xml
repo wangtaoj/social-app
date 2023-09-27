@@ -25,4 +25,17 @@
     session_key,unionid,sex,
     intro,create_time,update_time
   </sql>
+
+  <select id="selectByIds" resultType="com.wangtao.social.api.user.vo.UserVO">
+    select
+      id,
+      phone,
+      avatar_url,
+      nick_name
+    from sys_user
+    where id in
+    <foreach collection="userIds" item="userId" open="(" separator="," close=")">
+        #{userId}
+    </foreach>
+  </select>
 </mapper>

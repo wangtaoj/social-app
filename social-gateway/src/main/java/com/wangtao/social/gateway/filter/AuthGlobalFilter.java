@@ -11,18 +11,23 @@ import com.wangtao.social.gateway.handler.AuthHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
+import org.springframework.context.EnvironmentAware;
+import org.springframework.core.env.Environment;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author wangtao
@@ -30,15 +35,22 @@ import java.util.Set;
  */
 @Slf4j
 @Component
-public class AuthGlobalFilter implements GlobalFilter {
+public class AuthGlobalFilter implements GlobalFilter, EnvironmentAware {
 
     private final AuthHandler authHandler;
 
     private final GatewayProperties gatewayProperties;
 
+    private Environment environment;
+
     public AuthGlobalFilter(AuthHandler authHandler, GatewayProperties gatewayProperties) {
         this.authHandler = authHandler;
         this.gatewayProperties = gatewayProperties;
+    }
+
+    @Override
+    public void setEnvironment(@NonNull Environment environment) {
+        this.environment = environment;
     }
 
     @Override
@@ -54,8 +66,9 @@ public class AuthGlobalFilter implements GlobalFilter {
             return chain.filter(exchange);
         }
 
+        Set<String> profiles = Arrays.stream(environment.getActiveProfiles()).collect(Collectors.toSet());
         // feign 请求检查
-        if (requestUrl.contains(UrlConstant.FEGIN_PREFIX)) {
+        if (!profiles.contains("dev") && requestUrl.contains(UrlConstant.FEGIN_PREFIX)) {
             return sendError(exchange.getResponse(), new BusinessException(ResponseEnum.NO_PERMISSION));
         }
 

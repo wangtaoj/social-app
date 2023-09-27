@@ -2,14 +2,16 @@ package com.wangtao.social.user.service;
 
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.wangtao.social.api.user.vo.UserVO;
 import com.wangtao.social.common.core.enums.ResponseEnum;
 import com.wangtao.social.common.core.exception.BusinessException;
 import com.wangtao.social.common.core.session.SessionUserHolder;
 import com.wangtao.social.common.redis.util.RedisKeyUtils;
-import com.wangtao.social.user.converter.UserConverter;
-import com.wangtao.social.user.po.SysUser;
 import com.wangtao.social.user.api.dto.UserDTO;
+import com.wangtao.social.user.converter.UserConverter;
 import com.wangtao.social.user.mapper.SysUserMapper;
+import com.wangtao.social.user.po.SysUser;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -17,6 +19,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author wangtao
@@ -77,5 +82,12 @@ public class SysUserService {
         if (updateCount == 0) {
             throw new BusinessException(ResponseEnum.SYS_ERROR, "用户信息不存在, 更新异常!");
         }
+    }
+
+    public Map<Long, UserVO> getByIds(Set<Long> userIds) {
+        if (CollectionUtils.isEmpty(userIds)) {
+            return Collections.emptyMap();
+        }
+        return sysUserMapper.selectByIds(userIds);
     }
 }

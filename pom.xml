@@ -12,6 +12,7 @@
     <module>social-common</module>
     <module>social-biz</module>
     <module>social-gateway</module>
+    <module>social-api</module>
   </modules>
 
   <properties>
