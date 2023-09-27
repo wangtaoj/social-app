@@ -52,6 +52,6 @@ public class PostController {
      */
     @PostMapping("/listMyPost")
     public IPage<PostVO> listMyPost(@RequestBody PostQueryDTO postQuery) {
-        return postService.list(postQuery);
+        return postService.listMyPost(postQuery);
     }
 }

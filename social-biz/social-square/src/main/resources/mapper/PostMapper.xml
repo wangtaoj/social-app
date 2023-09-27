@@ -26,7 +26,7 @@
     create_time,update_time
   </sql>
 
-  <select id="listOrderByLikeCount" resultMap="postVoResultMap">
+  <select id="list" resultMap="postVoResultMap">
     select
       id,
       user_id,
@@ -42,9 +42,11 @@
       and id = #{postQuery.postId}
     </if>
     <if test="postQuery.postIdBefore != null">
-      and like_count &lt;= (select like_count from ss_post where id = #{postQuery.postIdBefore})
+      <if test="postQuery.column == 'like_count'">
+        and like_count &lt;= (select like_count from ss_post where id = #{postQuery.postIdBefore})
+      </if>
       and id &lt; #{postQuery.postIdBefore}
     </if>
-    order by like_count desc, id desc
+    order by ${postQuery.orderBy}
   </select>
 </mapper>

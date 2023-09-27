@@ -20,7 +20,7 @@ public interface PostMapper extends BaseMapper<Post> {
      * @param postQuery 查询参数
      * @return 帖子列表
      */
-    IPage<PostVO> listOrderByLikeCount(IPage<PostVO> page, @Param("postQuery") PostQueryDTO postQuery);
+    IPage<PostVO> list(IPage<PostVO> page, @Param("postQuery") PostQueryDTO postQuery);
 }
 
 

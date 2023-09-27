@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapp
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wangtao.social.api.user.feign.UserFeignClient;
 import com.wangtao.social.api.user.vo.UserVO;
+import com.wangtao.social.common.core.enums.ResponseEnum;
+import com.wangtao.social.common.core.exception.BusinessException;
 import com.wangtao.social.common.core.session.SessionUserHolder;
 import com.wangtao.social.square.api.dto.AddPostDTO;
 import com.wangtao.social.square.api.dto.PostQueryDTO;
@@ -50,8 +52,12 @@ public class PostService {
     }
 
     public IPage<PostVO> list(PostQueryDTO postQuery) {
+        // 检查排序字段
+        if (!"id".equalsIgnoreCase(postQuery.getColumn()) && !"like_count".equalsIgnoreCase(postQuery.getColumn())) {
+            throw new BusinessException(ResponseEnum.PARAM_ILLEGAL, "只能根据时间和点赞数量排序");
+        }
         IPage<PostVO> page = new Page<>(postQuery.getCurrent(), postQuery.getSize());
-        postMapper.listOrderByLikeCount(page, postQuery);
+        postMapper.list(page, postQuery);
         fillExtraInfo(page);
         return page;
     }
@@ -59,7 +65,7 @@ public class PostService {
     public IPage<PostVO> listMyPost(PostQueryDTO postQuery) {
         postQuery.setUserId(SessionUserHolder.getSessionUser().getId());
         IPage<Post> tmpPage = new LambdaQueryChainWrapper<>(postMapper)
-                .eq(Post::getUserId, postQuery.getPostId())
+                .eq(Post::getUserId, postQuery.getUserId())
                 .orderByDesc(Post::getCreateTime)
                 .page(new Page<>(postQuery.getCurrent(), postQuery.getSize()));
 
