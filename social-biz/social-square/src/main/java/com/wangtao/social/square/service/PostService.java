@@ -20,7 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.Map;
-import java.util.Optional;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -39,6 +39,9 @@ public class PostService {
 
     @Autowired
     private UserFeignClient userFeignClient;
+
+    @Autowired
+    private LikeService likeService;
 
     public PostVO addPost(AddPostDTO postDTO) {
         Post post = postConverter.convert(postDTO);
@@ -78,19 +81,25 @@ public class PostService {
         Set<Long> userIds = page.getRecords().stream()
                 .map(PostVO::getUserId)
                 .collect(Collectors.toSet());
-        Map<Long, UserVO> users;
+        Set<Long> postIds = page.getRecords().stream()
+                .map(PostVO::getId)
+                .collect(Collectors.toSet());
+        Map<Long, UserVO> userMap;
         if (CollectionUtils.isEmpty(userIds)) {
-            users = Collections.emptyMap();
+            userMap = Collections.emptyMap();
         } else {
-            users = userFeignClient.getByIds(userIds);
+            userMap = userFeignClient.getByIds(userIds);
         }
+        Map<Long, Boolean> likeStateMap = likeService.batchGetLikeStateByItemId(postIds);
         page.getRecords().forEach(post -> {
             // 填充用户信息
-            Optional.ofNullable(users.get(post.getUserId()))
-                    .ifPresent(user -> {
-                        post.setNickName(user.getNickName());
-                        post.setAvatarUrl(user.getAvatarUrl());
-                    });
+            UserVO user = userMap.get(post.getUserId());
+            if (Objects.nonNull(user)) {
+                post.setNickName(user.getNickName());
+                post.setAvatarUrl(user.getAvatarUrl());
+            }
+            post.setLike(likeStateMap.get(post.getId()));
+            post.setCommentCount(0);
         });
     }
 

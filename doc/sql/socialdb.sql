@@ -33,3 +33,15 @@ CREATE TABLE `ss_post`
     PRIMARY KEY (`id`),
     INDEX idx_user_id (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `ss_like` (
+    `id` bigint(20) NOT NULL,
+    `item_id` bigint(20) NOT NULL COMMENT '点赞条目id',
+    `user_id` bigint(20) NOT NULL COMMENT '用户id',
+    `like` tinyint(1) NOT NULL COMMENT '是否点赞，true点赞，false未点赞',
+    `create_time` datetime COMMENT '创建时间',
+    `update_time` datetime COMMENT '修改时间',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `uk_user_id_item_id` (`user_id`, `item_id`),
+    KEY `idx_item_id` (`item_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
