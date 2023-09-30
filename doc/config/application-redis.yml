@@ -1,7 +1,7 @@
 spring:
   redis:
-    host: ${redis.host}
-    port: ${redis.port}
+    cluster:
+      nodes: ${redis.nodes}
     password: ${redis.password}
     connect-timeout: 5000
     timeout: 30000
