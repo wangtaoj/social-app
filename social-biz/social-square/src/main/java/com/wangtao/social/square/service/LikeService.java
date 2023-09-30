@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * @author wangtao
@@ -31,11 +32,14 @@ public class LikeService {
     @Autowired
     private PostMapper postMapper;
 
+    private final AtomicLong count = new AtomicLong(1);
+
     @Transactional
     public void likeByDb(LikeDTO likeDTO) {
+        Long userId = count.getAndIncrement();
         Like existInfo = new LambdaQueryChainWrapper<>(likeMapper)
                 .eq(Like::getItemId, likeDTO.getItemId())
-                .eq(Like::getUserId, SessionUserHolder.getSessionUser().getId())
+                .eq(Like::getUserId, userId)
                 .last("for update")
                 .one();
         boolean isLike;
@@ -43,7 +47,7 @@ public class LikeService {
             isLike = true;
             Like like = new Like();
             like.setItemId(likeDTO.getItemId());
-            like.setUserId(SessionUserHolder.getSessionUser().getId());
+            like.setUserId(userId);
             like.setLike(true);
             likeMapper.insert(like);
         } else {
