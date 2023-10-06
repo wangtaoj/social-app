@@ -38,15 +38,19 @@
       update_time
     from ss_post
     where del_flg = 0
-    <if test="postQuery.postId != null">
-      and id = #{postQuery.postId}
-    </if>
-    <if test="postQuery.postIdBefore != null">
-      <if test="postQuery.column == 'like_count'">
-        and like_count &lt;= (select like_count from ss_post where id = #{postQuery.postIdBefore})
-      </if>
-      and id &lt; #{postQuery.postIdBefore}
-    </if>
-    order by ${postQuery.orderBy}
+    <choose>
+      <when test="postQuery.postId != null">
+        and id = #{postQuery.postId}
+      </when>
+      <otherwise>
+        <if test="postQuery.postIdBefore != null">
+          <if test="postQuery.column == 'like_count'">
+            and like_count &lt;= (select like_count from ss_post where id = #{postQuery.postIdBefore})
+          </if>
+          and id &lt; #{postQuery.postIdBefore}
+        </if>
+        order by ${postQuery.orderBy}
+      </otherwise>
+    </choose>
   </select>
 </mapper>

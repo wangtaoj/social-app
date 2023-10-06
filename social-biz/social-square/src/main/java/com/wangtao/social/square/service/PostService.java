@@ -66,9 +66,12 @@ public class PostService {
     }
 
     public IPage<PostVO> list(PostQueryDTO postQuery) {
-        // 检查排序字段
-        if (!"id".equalsIgnoreCase(postQuery.getColumn()) && !"like_count".equalsIgnoreCase(postQuery.getColumn())) {
-            throw new BusinessException(ResponseEnum.PARAM_ILLEGAL, "只能根据时间和点赞数量排序");
+        // 根据帖子id查找则不用排序
+        if (postQuery.getPostId() == null) {
+            // 检查排序字段
+            if (!"id".equalsIgnoreCase(postQuery.getColumn()) && !"like_count".equalsIgnoreCase(postQuery.getColumn())) {
+                throw new BusinessException(ResponseEnum.PARAM_ILLEGAL, "只能根据时间和点赞数量排序");
+            }
         }
         IPage<PostVO> page = new Page<>(postQuery.getCurrent(), postQuery.getSize());
         postMapper.list(page, postQuery);
