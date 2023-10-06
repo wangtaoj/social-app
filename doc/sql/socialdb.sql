@@ -45,3 +45,34 @@ CREATE TABLE `ss_like` (
     UNIQUE KEY `uk_user_id_item_id` (`user_id`, `item_id`),
     KEY `idx_item_id` (`item_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `ss_post_comment_parent` (
+    `id` bigint(20) NOT NULL COMMENT '评论id',
+    `item_id` bigint(20) NOT NULL COMMENT '条目id',
+    `parent_id` bigint(20) NOT NULL COMMENT '父评论id，也即第一级评论',
+    `reply_id` bigint(20) DEFAULT NULL COMMENT '被回复的评论id（没有则是回复父级评论，有则是回复这个人的评论）',
+    `user_id` bigint(20) NOT NULL COMMENT '评论人id',
+    `content` varchar(1000) NOT NULL COMMENT '内容',
+    `like_count` int(4) DEFAULT '0' COMMENT '点赞数',
+    `is_publisher` tinyint(1) DEFAULT '0' COMMENT '是否为发布者',
+    `del_flg` tinyint DEFAULT '0' COMMENT '删除标志',
+    `create_time` datetime COMMENT '创建时间',
+    `update_time` datetime COMMENT '修改时间',
+    PRIMARY KEY (`id`),
+    KEY `idx_parent_id` (`parent_id`),
+    KEY `idx_item_id` (`item_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `ss_post_comment_parent` (
+    `id` bigint(20) NOT NULL COMMENT '评论id',
+    `item_id` bigint(20) NOT NULL COMMENT '条目id',
+    `user_id` bigint(20) NOT NULL COMMENT '用户id',
+    `content` varchar(1000) NOT NULL COMMENT '内容',
+    `like_count` int(4) DEFAULT '0' COMMENT '点赞数',
+    `is_publisher` tinyint(1) DEFAULT '0' COMMENT '是否为发布者',
+    `del_flg` tinyint DEFAULT '0' COMMENT '删除标志',
+    `create_time` datetime COMMENT '创建时间',
+    `update_time` datetime COMMENT '修改时间',
+    PRIMARY KEY (`id`),
+    KEY `idx_item_id` (`item_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

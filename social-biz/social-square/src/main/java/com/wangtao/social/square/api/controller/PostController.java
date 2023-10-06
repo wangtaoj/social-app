@@ -3,7 +3,9 @@ package com.wangtao.social.square.api.controller;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.wangtao.social.common.core.response.ServerReponseDecorator;
 import com.wangtao.social.square.api.dto.AddPostDTO;
+import com.wangtao.social.square.api.dto.PostCommentDTO;
 import com.wangtao.social.square.api.dto.PostQueryDTO;
+import com.wangtao.social.square.api.vo.CommentVO;
 import com.wangtao.social.square.api.vo.PostVO;
 import com.wangtao.social.square.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,8 +29,9 @@ public class PostController {
     private PostService postService;
 
     /**
-     * 打声招呼吧
-     * @return 招呼
+     * 添加帖子
+     * @param postDTO 帖子内容
+     * @return 帖子信息
      */
     @PostMapping("/add")
     public PostVO add(@Validated @RequestBody AddPostDTO postDTO) {
@@ -53,5 +56,15 @@ public class PostController {
     @PostMapping("/listMyPost")
     public IPage<PostVO> listMyPost(@RequestBody PostQueryDTO postQuery) {
         return postService.listMyPost(postQuery);
+    }
+
+    /**
+     * 给帖子添加评论
+     * @param request 帖子评论
+     * @return 评论信息
+     */
+    @PostMapping("/addComment")
+    public CommentVO addComment(@Validated @RequestBody PostCommentDTO request) {
+        return postService.addComment(request);
     }
 }

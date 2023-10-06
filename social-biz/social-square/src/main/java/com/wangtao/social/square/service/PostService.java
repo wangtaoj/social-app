@@ -9,11 +9,16 @@ import com.wangtao.social.common.core.enums.ResponseEnum;
 import com.wangtao.social.common.core.exception.BusinessException;
 import com.wangtao.social.common.core.session.SessionUserHolder;
 import com.wangtao.social.square.api.dto.AddPostDTO;
+import com.wangtao.social.square.api.dto.PostCommentDTO;
 import com.wangtao.social.square.api.dto.PostQueryDTO;
+import com.wangtao.social.square.api.vo.CommentVO;
 import com.wangtao.social.square.api.vo.PostVO;
+import com.wangtao.social.square.converter.PostCommentConverter;
 import com.wangtao.social.square.converter.PostConverter;
 import com.wangtao.social.square.mapper.PostMapper;
 import com.wangtao.social.square.po.Post;
+import com.wangtao.social.square.po.PostCommentChild;
+import com.wangtao.social.square.po.PostCommentParent;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -42,6 +47,12 @@ public class PostService {
 
     @Autowired
     private LikeService likeService;
+
+    @Autowired
+    private PostCommentService postCommentService;
+
+    @Autowired
+    private PostCommentConverter postCommentConverter;
 
     public PostVO addPost(AddPostDTO postDTO) {
         Post post = postConverter.convert(postDTO);
@@ -101,6 +112,61 @@ public class PostService {
             post.setLike(likeStateMap.get(post.getId()));
             post.setCommentCount(0);
         });
+    }
+
+    public CommentVO addComment(PostCommentDTO request) {
+        CommentVO commentVO;
+        // 区分出一级评论还是二级评论
+        if (Objects.isNull(request.getParentId())) {
+            if (Objects.nonNull(request.getReplyId())) {
+                throw new BusinessException(ResponseEnum.PARAM_ILLEGAL, "replyId must be null!");
+            }
+            // 一级
+            commentVO = oneComment(request);
+        } else if (Objects.isNull(request.getReplyId())) {
+            // 回复 一级 的 二级 评论
+            commentVO = twoComment(request);
+        } else {
+            // 回复 二级 评论的 二级 评论
+            commentVO = twoComment(request);
+        }
+        return commentVO;
+    }
+
+    private CommentVO oneComment(PostCommentDTO request) {
+        Post post = postMapper.selectById(request.getPostId());
+        if (Objects.isNull(post)) {
+            throw new BusinessException(ResponseEnum.PARAM_ILLEGAL, "帖子数据不存在, 评论失败!");
+        }
+        PostCommentParent commentParent = postCommentConverter.convertToCommentParent(request);
+        commentParent.setUserId(SessionUserHolder.getSessionUser().getId());
+        commentParent.setLikeCount(0);
+        commentParent.setPublisher(true);
+        postCommentService.insertPostCommentParent(commentParent);
+        return postCommentConverter.convertToVO(commentParent);
+    }
+
+    private CommentVO twoComment(PostCommentDTO request) {
+        if (Objects.nonNull(request.getReplyId())) {
+            // 回复id不为null, 表明这个评论是回复二级评论的, 所以找到他要评论的信息
+            PostCommentChild commentChild = postCommentService.getPostCommentChild(request.getReplyId());
+            if (Objects.isNull(commentChild)) {
+                throw new BusinessException(ResponseEnum.PARAM_ILLEGAL, "您要回复的评论不存在，回复失败！");
+            }
+        } else {
+            // 到这里, 表明回复的是一级评论
+            PostCommentParent commentParent = postCommentService.getPostCommentParent(request.getParentId());
+            if (Objects.isNull(commentParent)) {
+                throw new BusinessException(ResponseEnum.PARAM_ILLEGAL, "您要回复的评论不存在，回复失败！");
+            }
+        }
+
+        PostCommentChild commentChild = postCommentConverter.convertToCommentChild(request);
+        commentChild.setUserId(SessionUserHolder.getSessionUser().getId());
+        commentChild.setLikeCount(0);
+        commentChild.setPublisher(true);
+        postCommentService.insertPostCommentChild(commentChild);
+        return postCommentConverter.convertToVO(commentChild);
     }
 
 }
