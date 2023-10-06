@@ -57,6 +57,12 @@ public class PostCommentService {
         return postCommentChildMapper.selectById(id);
     }
 
+    public int getCommentCountOfPost(Long postId) {
+        int oneComment = postCommentParentMapper.countByItemId(postId);
+        int twoComment = postCommentChildMapper.countByItemId(postId);
+        return oneComment + twoComment;
+    }
+
     public CommentListVO listOneComment(PostCommentQueryDTO commentQueryDTO) {
         CommentListVO vo = new CommentListVO();
         vo.setCommentTotal(0L);

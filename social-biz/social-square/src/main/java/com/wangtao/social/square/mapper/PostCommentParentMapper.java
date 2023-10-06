@@ -17,6 +17,8 @@ public interface PostCommentParentMapper extends BaseMapper<PostCommentParent> {
 
     IPage<CommentVO> listByItemId(IPage<CommentVO> page, @Param("query") PostCommentQueryDTO query);
 
+    int countByItemId(@Param("itemId") Long itemId);
+
 }
 
 

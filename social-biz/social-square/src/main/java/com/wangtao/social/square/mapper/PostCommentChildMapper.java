@@ -16,6 +16,8 @@ import org.apache.ibatis.annotations.Param;
 public interface PostCommentChildMapper extends BaseMapper<PostCommentChild> {
 
     IPage<CommentVO> listByParentId(IPage<CommentVO> page, @Param("query") PostCommentQueryDTO query);
+
+    int countByItemId(@Param("itemId") Long itemId);
 }
 
 

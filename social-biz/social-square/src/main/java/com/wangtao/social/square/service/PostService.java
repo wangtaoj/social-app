@@ -110,7 +110,7 @@ public class PostService {
                 post.setAvatarUrl(user.getAvatarUrl());
             }
             post.setLike(likeStateMap.get(post.getId()));
-            post.setCommentCount(0);
+            post.setCommentCount(postCommentService.getCommentCountOfPost(post.getId()));
         });
     }
 

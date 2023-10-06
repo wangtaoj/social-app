@@ -42,4 +42,12 @@
     and parent_id = #{query.parentId}
     order by id desc
   </select>
+
+  <select id="countByItemId" resultType="_int">
+    select
+      count(*)
+    from ss_post_comment_child
+    where del_flg = 0
+    and item_id = #{itemId}
+  </select>
 </mapper>
