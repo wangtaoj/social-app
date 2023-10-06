@@ -16,9 +16,22 @@
     <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
   </resultMap>
 
-  <sql id="Base_Column_List">
-    id,item_id,user_id,
-    content,like_count,is_publisher,
-    del_flg,create_time,update_time
-  </sql>
+  <select id="listByItemId" resultType="com.wangtao.social.square.api.vo.CommentVO">
+    select
+      id,
+      item_id,
+      user_id,
+      content,
+      like_count,
+      is_publisher as publisher,
+      create_time,
+      update_time
+    from ss_post_comment_parent
+    where del_flg = 0
+    and item_id = #{query.itemId,jdbcType=BIGINT}
+    <if test="query.idBefore != null">
+      and id &lt; #{query.idBefore}
+    </if>
+    order by id desc
+  </select>
 </mapper>

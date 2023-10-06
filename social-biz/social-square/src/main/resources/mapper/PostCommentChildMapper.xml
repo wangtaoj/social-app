@@ -24,4 +24,22 @@
     like_count,is_publisher,del_flg,
     create_time,update_time
   </sql>
+
+  <select id="listByParentId" resultType="com.wangtao.social.square.api.vo.CommentVO">
+    select
+      id,
+      item_id,
+      parent_id,
+      reply_id,
+      user_id,
+      content,
+      like_count,
+      is_publisher as publisher,
+      create_time,
+      update_time
+    from ss_post_comment_child
+    where del_flg = 0
+    and parent_id = #{query.parentId}
+    order by id desc
+  </select>
 </mapper>
