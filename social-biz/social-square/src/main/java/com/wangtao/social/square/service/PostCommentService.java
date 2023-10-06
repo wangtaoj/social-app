@@ -103,7 +103,7 @@ public class PostCommentService {
 
         if (CollectionUtils.isNotEmpty(replyIdSet)) {
             Map<Long, PostCommentChild> replyCommentMap = new LambdaQueryChainWrapper<>(postCommentChildMapper)
-                    .select(PostCommentChild::getId, PostCommentChild::getUserId, PostCommentChild::getContent)
+                    .select(List.of(PostCommentChild::getId, PostCommentChild::getUserId, PostCommentChild::getContent))
                     .in(PostCommentChild::getId, replyIdSet)
                     .list()
                     .stream().collect(Collectors.toMap(PostCommentChild::getId, Function.identity()));
