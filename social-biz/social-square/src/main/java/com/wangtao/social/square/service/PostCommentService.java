@@ -119,8 +119,9 @@ public class PostCommentService {
                 }
             });
         }
-
-        fillUserInfo(commentPage.getRecords());
+        if (fillUserInfo) {
+            fillUserInfo(commentPage.getRecords());
+        }
         return commentPage;
     }
 
