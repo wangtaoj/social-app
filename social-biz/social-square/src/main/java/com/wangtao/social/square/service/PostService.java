@@ -13,6 +13,7 @@ import com.wangtao.social.square.api.dto.PostCommentDTO;
 import com.wangtao.social.square.api.dto.PostQueryDTO;
 import com.wangtao.social.square.api.vo.CommentVO;
 import com.wangtao.social.square.api.vo.PostVO;
+import com.wangtao.social.square.api.vo.UserPostStatisticsVO;
 import com.wangtao.social.square.converter.PostCommentConverter;
 import com.wangtao.social.square.converter.PostConverter;
 import com.wangtao.social.square.mapper.PostMapper;
@@ -170,6 +171,18 @@ public class PostService {
         commentChild.setPublisher(true);
         postCommentService.insertPostCommentChild(commentChild);
         return postCommentConverter.convertToVO(commentChild);
+    }
+
+    public UserPostStatisticsVO userPostStatistics() {
+        Long userId = SessionUserHolder.getSessionUser().getId();
+        long postCount = new LambdaQueryChainWrapper<>(postMapper)
+                .eq(Post::getUserId, userId)
+                .count();
+
+        long postLikeCount = postMapper.selectLikeCountByUserId(userId);
+        return new UserPostStatisticsVO()
+                .setPostCount(postCount)
+                .setPostLikeCount(postLikeCount);
     }
 
 }

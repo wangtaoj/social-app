@@ -21,6 +21,13 @@ public interface PostMapper extends BaseMapper<Post> {
      * @return 帖子列表
      */
     IPage<PostVO> list(IPage<PostVO> page, @Param("postQuery") PostQueryDTO postQuery);
+
+    /**
+     * 统计用户下面所有帖子的点赞数量
+     * @param userId 用户id
+     * @return 所有帖子的点赞数量
+     */
+    long selectLikeCountByUserId(@Param("userId") Long userId);
 }
 
 

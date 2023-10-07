@@ -7,9 +7,11 @@ import com.wangtao.social.square.api.dto.PostCommentDTO;
 import com.wangtao.social.square.api.dto.PostQueryDTO;
 import com.wangtao.social.square.api.vo.CommentVO;
 import com.wangtao.social.square.api.vo.PostVO;
+import com.wangtao.social.square.api.vo.UserPostStatisticsVO;
 import com.wangtao.social.square.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -66,5 +68,14 @@ public class PostController {
     @PostMapping("/addComment")
     public CommentVO addComment(@Validated @RequestBody PostCommentDTO request) {
         return postService.addComment(request);
+    }
+
+    /**
+     * 统计用户的发帖数量以及所有帖子的点赞数量
+     * @return 用户的发帖数量以及所有帖子的点赞数量
+     */
+    @GetMapping("/userPostStatistics")
+    public UserPostStatisticsVO userPostStatistics() {
+        return postService.userPostStatistics();
     }
 }

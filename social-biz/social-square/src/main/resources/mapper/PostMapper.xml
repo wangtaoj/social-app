@@ -20,12 +20,6 @@
 
   </resultMap>
 
-  <sql id="Base_Column_List">
-    id,user_id,content,
-    img_url_list,like_count,del_flg,
-    create_time,update_time
-  </sql>
-
   <select id="list" resultMap="postVoResultMap">
     select
       id,
@@ -52,5 +46,13 @@
         order by ${postQuery.orderBy}
       </otherwise>
     </choose>
+  </select>
+
+  <select id="selectLikeCountByUserId" resultType="_long">
+    select
+      sum(like_count)
+    from ss_post
+    where del_flg = 0
+    and user_id = #{userId}
   </select>
 </mapper>
