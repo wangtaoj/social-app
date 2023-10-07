@@ -1,6 +1,5 @@
-package com.wangtao.social.square.constant;
+package com.wangtao.social.common.square.enums;
 
-import com.baomidou.mybatisplus.annotation.EnumValue;
 import lombok.Getter;
 
 /**
@@ -15,7 +14,6 @@ public enum CommentTypeEnum {
     POST_COMMENT(2, "帖子评论"),
     ;
 
-    @EnumValue
     private final Integer value;
 
     private final String desp;

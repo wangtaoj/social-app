@@ -14,6 +14,7 @@
   <modules>
     <module>social-common-core</module>
     <module>social-common-redis</module>
+    <module>social-common-square</module>
   </modules>
 
   <dependencies>

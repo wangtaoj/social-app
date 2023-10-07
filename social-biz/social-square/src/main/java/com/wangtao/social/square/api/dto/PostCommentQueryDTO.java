@@ -1,7 +1,7 @@
 package com.wangtao.social.square.api.dto;
 
 import com.wangtao.social.common.core.dto.PageParam;
-import com.wangtao.social.square.constant.CommentTypeEnum;
+import com.wangtao.social.common.square.enums.CommentTypeEnum;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
