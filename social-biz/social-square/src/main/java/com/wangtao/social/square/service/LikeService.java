@@ -2,12 +2,18 @@ package com.wangtao.social.square.service;
 
 import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
 import com.baomidou.mybatisplus.extension.conditions.update.LambdaUpdateChainWrapper;
+import com.wangtao.social.common.core.enums.ResponseEnum;
+import com.wangtao.social.common.core.exception.BusinessException;
 import com.wangtao.social.common.core.session.SessionUserHolder;
 import com.wangtao.social.square.api.dto.LikeDTO;
 import com.wangtao.social.square.mapper.LikeMapper;
+import com.wangtao.social.square.mapper.PostCommentChildMapper;
+import com.wangtao.social.square.mapper.PostCommentParentMapper;
 import com.wangtao.social.square.mapper.PostMapper;
 import com.wangtao.social.square.po.Like;
 import com.wangtao.social.square.po.Post;
+import com.wangtao.social.square.po.PostCommentChild;
+import com.wangtao.social.square.po.PostCommentParent;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,7 +23,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * @author wangtao
@@ -32,16 +37,28 @@ public class LikeService {
     @Autowired
     private PostMapper postMapper;
 
-    private final AtomicLong count = new AtomicLong(1);
+    @Autowired
+    private PostCommentParentMapper postCommentParentMapper;
+
+    @Autowired
+    private PostCommentChildMapper postCommentChildMapper;
 
     @Transactional
     public void likeByDb(LikeDTO likeDTO) {
-        Long userId = count.getAndIncrement();
+        Long userId = SessionUserHolder.getSessionUser().getId();
         Like existInfo = new LambdaQueryChainWrapper<>(likeMapper)
                 .eq(Like::getItemId, likeDTO.getItemId())
                 .eq(Like::getUserId, userId)
-                .last("for update")
                 .one();
+        if (likeDTO.getLike() &&
+                (Objects.nonNull(existInfo) && existInfo.getLike())) {
+            throw new BusinessException(ResponseEnum.PARAM_ILLEGAL, "您已经点过赞了, 不能重复点赞！");
+        }
+        if (!likeDTO.getLike() &&
+                (Objects.isNull(existInfo) || !existInfo.getLike())) {
+            throw new BusinessException(ResponseEnum.PARAM_ILLEGAL, "您还未曾点赞过, 无法取消点赞！");
+        }
+
         boolean isLike;
         if (Objects.isNull(existInfo)) {
             isLike = true;
@@ -57,12 +74,34 @@ public class LikeService {
                     .eq(Like::getId, existInfo.getId())
                     .update();
         }
-        // 更新帖子数量
-        new LambdaUpdateChainWrapper<>(postMapper)
-                .setSql(isLike,"like_count = like_count + 1")
-                .setSql(!isLike, "like_count = like_count - 1")
-                .eq(Post::getId, likeDTO.getItemId())
-                .update();
+        switch (likeDTO.getType()) {
+            case POST:
+                // 更新帖子数量
+                new LambdaUpdateChainWrapper<>(postMapper)
+                        .setSql(isLike,"like_count = like_count + 1")
+                        .setSql(!isLike, "like_count = like_count - 1")
+                        .eq(Post::getId, likeDTO.getItemId())
+                        .update();
+                break;
+            case POST_COMMENT_ONE:
+                // 更新一级评论数量
+                new LambdaUpdateChainWrapper<>(postCommentParentMapper)
+                        .setSql(isLike,"like_count = like_count + 1")
+                        .setSql(!isLike, "like_count = like_count - 1")
+                        .eq(PostCommentParent::getId, likeDTO.getItemId())
+                        .update();
+                break;
+            case POST_COMMENT_TWO:
+                // 更新二级评论数量
+                new LambdaUpdateChainWrapper<>(postCommentChildMapper)
+                        .setSql(isLike,"like_count = like_count + 1")
+                        .setSql(!isLike, "like_count = like_count - 1")
+                        .eq(PostCommentChild::getId, likeDTO.getItemId())
+                        .update();
+                break;
+            default:
+                break;
+        }
     }
 
     public Map<Long, Boolean> batchGetLikeStateByItemId(Set<Long> itemIdList) {

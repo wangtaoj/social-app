@@ -41,6 +41,9 @@ public class PostCommentService {
     @Autowired
     private UserFeignClient userFeignClient;
 
+    @Autowired
+    private LikeService likeService;
+
     public void insertPostCommentParent(PostCommentParent postCommentParent) {
         postCommentParentMapper.insert(postCommentParent);
     }
@@ -82,11 +85,11 @@ public class PostCommentService {
             commentQueryDTO.setSize(3L);
             comment.setChildCommentPage(listTwoComment(commentQueryDTO, false));
         });
-        fillUserInfo(vo.getCommentPageData().getRecords());
+        fillExtraInfo(vo.getCommentPageData().getRecords());
         return vo;
     }
 
-    public IPage<CommentVO> listTwoComment(PostCommentQueryDTO commentQueryDTO, boolean fillUserInfo) {
+    public IPage<CommentVO> listTwoComment(PostCommentQueryDTO commentQueryDTO, boolean fillExtraInfo) {
         IPage<CommentVO> commentPage = postCommentChildMapper.listByParentId(
                 new Page<>(commentQueryDTO.getCurrent(), commentQueryDTO.getSize()),
                 commentQueryDTO
@@ -119,10 +122,18 @@ public class PostCommentService {
                 }
             });
         }
-        if (fillUserInfo) {
-            fillUserInfo(commentPage.getRecords());
+        if (fillExtraInfo) {
+            fillExtraInfo(commentPage.getRecords());
         }
         return commentPage;
+    }
+
+    private void fillExtraInfo(List<CommentVO> commentList) {
+        if (CollectionUtils.isEmpty(commentList)) {
+            return;
+        }
+        fillUserInfo(commentList);
+        fillLikeState(commentList);
     }
 
     /**
@@ -184,6 +195,29 @@ public class PostCommentService {
             if (Objects.nonNull(user)) {
                 comment.getReplyInfo().setNickName(user.getNickName());
                 comment.getReplyInfo().setAvatarUrl(user.getAvatarUrl());
+            }
+        }
+    }
+
+    private void fillLikeState(List<CommentVO> commentList) {
+        Set<Long> commentIdSet = new HashSet<>();
+        for (CommentVO comment : commentList) {
+            commentIdSet.add(comment.getId());
+            if (Objects.nonNull(comment.getChildCommentPage()) &&
+                    CollectionUtils.isNotEmpty(comment.getChildCommentPage().getRecords())) {
+                for (CommentVO commentChild : comment.getChildCommentPage().getRecords()) {
+                    commentIdSet.add(commentChild.getId());
+                }
+            }
+        }
+        Map<Long, Boolean> likeStateMap = likeService.batchGetLikeStateByItemId(commentIdSet);
+        for (CommentVO comment : commentList) {
+            comment.setLike(likeStateMap.get(comment.getId()));
+            if (Objects.nonNull(comment.getChildCommentPage()) &&
+                    CollectionUtils.isNotEmpty(comment.getChildCommentPage().getRecords())) {
+                for (CommentVO commentChild : comment.getChildCommentPage().getRecords()) {
+                    commentChild.setLike(likeStateMap.get(commentChild.getId()));
+                }
             }
         }
     }
