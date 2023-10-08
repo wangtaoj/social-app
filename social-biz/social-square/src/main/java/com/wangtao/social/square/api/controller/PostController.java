@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -38,6 +39,15 @@ public class PostController {
     @PostMapping("/add")
     public PostVO add(@Validated @RequestBody AddPostDTO postDTO) {
         return postService.addPost(postDTO);
+    }
+
+    /**
+     * 删除帖子
+     * @param id 帖子id
+     */
+    @GetMapping("/delete")
+    public void delete(@RequestParam Long id) {
+        postService.deletePost(id);
     }
 
     /**

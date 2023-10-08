@@ -2,6 +2,7 @@ package com.wangtao.social.square.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
+import com.baomidou.mybatisplus.extension.conditions.update.LambdaUpdateChainWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wangtao.social.api.user.feign.UserFeignClient;
 import com.wangtao.social.api.user.vo.UserVO;
@@ -64,6 +65,13 @@ public class PostService {
         postVO.setLike(false);
         postVO.setCommentCount(0);
         return postConverter.convertToVO(post);
+    }
+
+    public void deletePost(Long id) {
+        new LambdaUpdateChainWrapper<>(postMapper)
+                .eq(Post::getId, id)
+                .eq(Post::getUserId, SessionUserHolder.getSessionUser().getId())
+                .remove();
     }
 
     public IPage<PostVO> list(PostQueryDTO postQuery) {
