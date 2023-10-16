@@ -76,3 +76,21 @@ CREATE TABLE `ss_post_comment_parent` (
     PRIMARY KEY (`id`),
     KEY `idx_item_id` (`item_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `ss_user_inbox` (
+    `id` bigint(20) NOT NULL COMMENT '消息id',
+    `uuid` varchar(128) NOT NULL COMMENT '消息数据唯一id',
+    `message_type` tinyint(1) NOT NULL COMMENT '消息类型',
+    `post_id` bigint(20) COMMENT '帖子id',
+    `item_id` bigint(20) NOT NULL COMMENT '业务数据id',
+    `content` varchar(1000) COMMENT '内容',
+    `service_message_type` tinyint(1) NOT NULL COMMENT '业务数据类型',
+    `from_user_id` bigint(20) NOT NULL COMMENT '发起方的用户ID',
+    `to_user_id` bigint(20) NOT NULL COMMENT '接收方的用户ID',
+    `read_position_id` bigint(20) DEFAULT '0' COMMENT '用户最新读取位置ID',
+    `create_time` datetime COMMENT '创建时间',
+    `update_time` datetime COMMENT '修改时间',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `uk_uuid` (`uuid`),
+    KEY `idx_to_user_id_message_type` (`to_user_id`, `message_type`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
