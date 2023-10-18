@@ -12,6 +12,12 @@ public final class AssertUtils {
 
     private AssertUtils() {}
 
+    public static void assertNotNull(Object value, String msg) {
+        if (value == null) {
+            throw new BusinessException(ResponseEnum.PARAM_ILLEGAL, msg);
+        }
+    }
+
     public static void assertNotEmpty(Object value, String msg) {
         if (value instanceof String) {
             if (StringUtils.isNotBlank(value.toString())) {

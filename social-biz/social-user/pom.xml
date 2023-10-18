@@ -20,6 +20,12 @@
 
     <dependency>
       <groupId>com.wangtao</groupId>
+      <artifactId>social-common-rocketmq</artifactId>
+      <version>${social-app.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.wangtao</groupId>
       <artifactId>social-api-user</artifactId>
       <version>${social-app.version}</version>
     </dependency>

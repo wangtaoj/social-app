@@ -5,17 +5,25 @@ import com.baomidou.mybatisplus.extension.conditions.update.LambdaUpdateChainWra
 import com.wangtao.social.common.core.enums.ResponseEnum;
 import com.wangtao.social.common.core.exception.BusinessException;
 import com.wangtao.social.common.core.session.SessionUserHolder;
+import com.wangtao.social.common.user.dto.UserMessageDTO;
+import com.wangtao.social.common.user.enums.UserCenterMessageTypeEnum;
+import com.wangtao.social.common.user.enums.UserCenterServiceMessageTypeEnum;
 import com.wangtao.social.square.api.dto.LikeDTO;
 import com.wangtao.social.square.mapper.LikeMapper;
 import com.wangtao.social.square.mapper.PostCommentChildMapper;
 import com.wangtao.social.square.mapper.PostCommentParentMapper;
 import com.wangtao.social.square.mapper.PostMapper;
+import com.wangtao.social.square.mq.LikeEvent;
 import com.wangtao.social.square.po.Like;
 import com.wangtao.social.square.po.Post;
 import com.wangtao.social.square.po.PostCommentChild;
 import com.wangtao.social.square.po.PostCommentParent;
 import org.apache.commons.collections4.CollectionUtils;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,7 +37,9 @@ import java.util.Set;
  * Created at 2023-09-28
  */
 @Service
-public class LikeService {
+public class LikeService implements ApplicationContextAware {
+
+    private ApplicationContext applicationContext;
 
     @Autowired
     private LikeMapper likeMapper;
@@ -60,6 +70,7 @@ public class LikeService {
         }
 
         boolean isLike;
+        UserCenterServiceMessageTypeEnum serviceMessageTypeEnum;
         if (Objects.isNull(existInfo)) {
             isLike = true;
             Like like = new Like();
@@ -76,6 +87,7 @@ public class LikeService {
         }
         switch (likeDTO.getType()) {
             case POST:
+                serviceMessageTypeEnum = UserCenterServiceMessageTypeEnum.POST;
                 // 更新帖子数量
                 new LambdaUpdateChainWrapper<>(postMapper)
                         .setSql(isLike,"like_count = like_count + 1")
@@ -84,6 +96,7 @@ public class LikeService {
                         .update();
                 break;
             case POST_COMMENT_ONE:
+                serviceMessageTypeEnum = UserCenterServiceMessageTypeEnum.POST_ONE_COMMENT;
                 // 更新一级评论数量
                 new LambdaUpdateChainWrapper<>(postCommentParentMapper)
                         .setSql(isLike,"like_count = like_count + 1")
@@ -92,6 +105,7 @@ public class LikeService {
                         .update();
                 break;
             case POST_COMMENT_TWO:
+                serviceMessageTypeEnum = UserCenterServiceMessageTypeEnum.POST_TWO_COMMENT;
                 // 更新二级评论数量
                 new LambdaUpdateChainWrapper<>(postCommentChildMapper)
                         .setSql(isLike,"like_count = like_count + 1")
@@ -100,7 +114,16 @@ public class LikeService {
                         .update();
                 break;
             default:
-                break;
+                throw new BusinessException(ResponseEnum.PARAM_ILLEGAL, "unkown type: " + likeDTO.getType());
+        }
+        // 发送消息
+        if (isLike) {
+            UserMessageDTO userMessage = new UserMessageDTO()
+                    .setMessageType(UserCenterMessageTypeEnum.LIKE.getValue())
+                    .setServiceMessageType(serviceMessageTypeEnum.getValue())
+                    .setItemId(likeDTO.getItemId())
+                    .setFromUserId(userId);
+            applicationContext.publishEvent(new LikeEvent(this, userMessage));
         }
     }
 
@@ -126,4 +149,8 @@ public class LikeService {
         return result;
     }
 
+    @Override
+    public void setApplicationContext(@NonNull ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = applicationContext;
+    }
 }

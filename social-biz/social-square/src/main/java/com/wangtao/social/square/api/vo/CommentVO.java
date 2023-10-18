@@ -92,6 +92,11 @@ public class CommentVO {
      */
     private String replyContent;
 
+    /**
+     * 用于发送消息
+     */
+    private Long toUserId;
+
     @Data
     public static class ReplyInfo {
         /**

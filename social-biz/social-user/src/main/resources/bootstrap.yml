@@ -22,5 +22,6 @@ spring:
             refresh: true
           - data-id: application-common.yml
           - data-id: application-redis.yml
+          - data-id: application-rocketmq.yml
         username: ${spring.cloud.nacos.discovery.username}
         password: ${spring.cloud.nacos.discovery.password}

@@ -9,6 +9,9 @@ import com.wangtao.social.api.user.vo.UserVO;
 import com.wangtao.social.common.core.enums.ResponseEnum;
 import com.wangtao.social.common.core.exception.BusinessException;
 import com.wangtao.social.common.core.session.SessionUserHolder;
+import com.wangtao.social.common.user.dto.UserMessageDTO;
+import com.wangtao.social.common.user.enums.UserCenterMessageTypeEnum;
+import com.wangtao.social.common.user.enums.UserCenterServiceMessageTypeEnum;
 import com.wangtao.social.square.api.dto.AddPostDTO;
 import com.wangtao.social.square.api.dto.PostCommentDTO;
 import com.wangtao.social.square.api.dto.PostQueryDTO;
@@ -18,12 +21,18 @@ import com.wangtao.social.square.api.vo.UserPostStatisticsVO;
 import com.wangtao.social.square.converter.PostCommentConverter;
 import com.wangtao.social.square.converter.PostConverter;
 import com.wangtao.social.square.mapper.PostMapper;
+import com.wangtao.social.square.mq.CommentEvent;
 import com.wangtao.social.square.po.Post;
 import com.wangtao.social.square.po.PostCommentChild;
 import com.wangtao.social.square.po.PostCommentParent;
 import org.apache.commons.collections4.CollectionUtils;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.Map;
@@ -36,7 +45,9 @@ import java.util.stream.Collectors;
  * Created at 2023-09-26
  */
 @Service
-public class PostService {
+public class PostService implements ApplicationContextAware {
+
+    private ApplicationContext applicationContext;
 
     @Autowired
     private PostConverter postConverter;
@@ -55,6 +66,10 @@ public class PostService {
 
     @Autowired
     private PostCommentConverter postCommentConverter;
+
+    public Post getPost(Long id) {
+        return postMapper.selectById(id);
+    }
 
     public PostVO addPost(AddPostDTO postDTO) {
         Post post = postConverter.convert(postDTO);
@@ -126,22 +141,36 @@ public class PostService {
         });
     }
 
+    @Transactional(rollbackFor = Exception.class)
     public CommentVO addComment(PostCommentDTO request) {
         CommentVO commentVO;
+        UserCenterServiceMessageTypeEnum serviceMessageTypeEnum;
         // 区分出一级评论还是二级评论
         if (Objects.isNull(request.getParentId())) {
             if (Objects.nonNull(request.getReplyId())) {
                 throw new BusinessException(ResponseEnum.PARAM_ILLEGAL, "replyId must be null!");
             }
+            serviceMessageTypeEnum = UserCenterServiceMessageTypeEnum.POST;
             // 一级
             commentVO = oneComment(request);
         } else if (Objects.isNull(request.getReplyId())) {
+            serviceMessageTypeEnum = UserCenterServiceMessageTypeEnum.POST_ONE_COMMENT;
             // 回复 一级 的 二级 评论
             commentVO = twoComment(request);
         } else {
+            serviceMessageTypeEnum = UserCenterServiceMessageTypeEnum.POST_TWO_COMMENT;
             // 回复 二级 评论的 二级 评论
             commentVO = twoComment(request);
         }
+        UserMessageDTO userMessage = new UserMessageDTO()
+                .setMessageType(UserCenterMessageTypeEnum.COMMENT.getValue())
+                .setServiceMessageType(serviceMessageTypeEnum.getValue())
+                .setPostId(commentVO.getItemId())
+                .setItemId(commentVO.getId())
+                .setContent(commentVO.getContent())
+                .setFromUserId(commentVO.getUserId())
+                .setToUserId(commentVO.getToUserId());
+        applicationContext.publishEvent(new CommentEvent(this, userMessage));
         return commentVO;
     }
 
@@ -155,22 +184,27 @@ public class PostService {
         commentParent.setLikeCount(0);
         commentParent.setPublisher(true);
         postCommentService.insertPostCommentParent(commentParent);
-        return postCommentConverter.convertToVO(commentParent);
+        CommentVO commentVO = postCommentConverter.convertToVO(commentParent);
+        commentVO.setToUserId(post.getUserId());
+        return commentVO;
     }
 
     private CommentVO twoComment(PostCommentDTO request) {
+        Long toUserId;
         if (Objects.nonNull(request.getReplyId())) {
             // 回复id不为null, 表明这个评论是回复二级评论的, 所以找到他要评论的信息
             PostCommentChild commentChild = postCommentService.getPostCommentChild(request.getReplyId());
             if (Objects.isNull(commentChild)) {
                 throw new BusinessException(ResponseEnum.PARAM_ILLEGAL, "您要回复的评论不存在，回复失败！");
             }
+            toUserId = commentChild.getUserId();
         } else {
             // 到这里, 表明回复的是一级评论
             PostCommentParent commentParent = postCommentService.getPostCommentParent(request.getParentId());
             if (Objects.isNull(commentParent)) {
                 throw new BusinessException(ResponseEnum.PARAM_ILLEGAL, "您要回复的评论不存在，回复失败！");
             }
+            toUserId = commentParent.getUserId();
         }
 
         PostCommentChild commentChild = postCommentConverter.convertToCommentChild(request);
@@ -178,7 +212,9 @@ public class PostService {
         commentChild.setLikeCount(0);
         commentChild.setPublisher(true);
         postCommentService.insertPostCommentChild(commentChild);
-        return postCommentConverter.convertToVO(commentChild);
+        CommentVO commentVO = postCommentConverter.convertToVO(commentChild);
+        commentVO.setToUserId(toUserId);
+        return commentVO;
     }
 
     public UserPostStatisticsVO userPostStatistics() {
@@ -193,4 +229,8 @@ public class PostService {
                 .setPostLikeCount(postLikeCount);
     }
 
+    @Override
+    public void setApplicationContext(@NonNull ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = applicationContext;
+    }
 }

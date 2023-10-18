@@ -1,4 +1,4 @@
 rocketmq:
   name-server: ${rocketmq.host}:${rocketmq.port}
   producer:
-    group: spring-producer
+    group: social-app
