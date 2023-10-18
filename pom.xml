@@ -32,6 +32,8 @@
     <springdoc.version>1.7.0</springdoc.version>
     <druid.version>1.2.16</druid.version>
     <mybatis-plus.version>3.5.3.2</mybatis-plus.version>
+    <rocketmq.boot.version>2.2.2</rocketmq.boot.version>
+    <rocketmq.version>4.9.4</rocketmq.version>
     <commons-collections4.version>4.4</commons-collections4.version>
     <commons-io.version>2.13.0</commons-io.version>
     <guava.version>30.0-jre</guava.version>
@@ -100,6 +102,23 @@
         <groupId>com.baomidou</groupId>
         <artifactId>mybatis-plus-boot-starter</artifactId>
         <version>${mybatis-plus.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.rocketmq</groupId>
+        <artifactId>rocketmq-client</artifactId>
+        <version>${rocketmq.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.rocketmq</groupId>
+        <artifactId>rocketmq-acl</artifactId>
+        <version>${rocketmq.version}</version>
+      </dependency>
+      <!-- 默认的rocketmq-client为4.9.3, 因此单独引入上面两个依赖 -->
+      <dependency>
+        <groupId>org.apache.rocketmq</groupId>
+        <artifactId>rocketmq-spring-boot-starter</artifactId>
+        <version>${rocketmq.boot.version}</version>
       </dependency>
 
       <dependency>

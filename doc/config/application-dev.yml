@@ -14,3 +14,7 @@ minio:
   access-key: LhulnOUakqQPuuPf6u3R
   secret-key: adSFdJU6qojXTQXzYjNYG5BdoLsZ2DBpf7mEjpgi
   default-bucket: social-app
+
+rocketmq:
+  host: 127.0.0.1
+  port: 9876
