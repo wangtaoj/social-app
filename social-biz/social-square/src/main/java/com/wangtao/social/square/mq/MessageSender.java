@@ -20,6 +20,7 @@ import org.springframework.transaction.event.TransactionalEventListener;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.ExecutorService;
 
 /**
  * @author wangtao
@@ -38,53 +39,75 @@ public class MessageSender {
     @Autowired
     private PostCommentService postCommentService;
 
+    @Autowired
+    private ExecutorService mqSenderExecutor;
+
     /**
      * 事务提交后执行
-     * 事务钩子执行时, 异常会被吞掉, 因此手动try catch
-     * 参见TransactionalApplicationListenerSynchronization.afterCompletion
      */
     @TransactionalEventListener(fallbackExecution = true)
     public void sendLikeMessage(LikeEvent likeEvent) {
+        UserMessageDTO userMessage = likeEvent.getUserMessage();
         try {
-            UserMessageDTO userMessage = likeEvent.getUserMessage();
-            if (UserCenterServiceMessageTypeEnum.POST.getValue().equals(userMessage.getServiceMessageType())) {
-                Post post = postService.getPost(userMessage.getItemId());
-                if (Objects.nonNull(post)) {
-                    userMessage.setPostId(post.getId());
-                    userMessage.setToUserId(post.getUserId());
-                }
+            /*
+             * 事务钩子执行时, 异常会被吞掉, 因此手动try catch
+             * 参见TransactionalApplicationListenerSynchronization.afterCompletion
+             * TransactionSynchronizationUtils.triggerAfterCompletion
+             */
+            if (likeEvent.isAsync()) {
+                mqSenderExecutor.execute(() -> doSendLikeMessage(userMessage));
+            } else {
+                doSendLikeMessage(userMessage);
             }
-            else if (UserCenterServiceMessageTypeEnum.POST_ONE_COMMENT.getValue().equals(userMessage.getServiceMessageType())) {
-                // 点赞一级评论
-                PostCommentParent postCommentParent = postCommentService.getPostCommentParent(userMessage.getItemId());
-                if (Objects.nonNull(postCommentParent)) {
-                    userMessage.setPostId(postCommentParent.getItemId());
-                    userMessage.setContent(postCommentParent.getContent());
-                    userMessage.setToUserId(postCommentParent.getUserId());
-                }
-            } else if (UserCenterServiceMessageTypeEnum.POST_TWO_COMMENT.getValue().equals(userMessage.getServiceMessageType())) {
-                // 点赞二级评论
-                PostCommentChild postCommentChild = postCommentService.getPostCommentChild(userMessage.getItemId());
-                if (Objects.nonNull(postCommentChild)) {
-                    userMessage.setPostId(postCommentChild.getItemId());
-                    userMessage.setContent(postCommentChild.getContent());
-                    userMessage.setToUserId(postCommentChild.getUserId());
-                }
-            }
-            sendMessage(TopicConstant.USER_MESSAGE + ":" + TopicConstant.TAG_LIKE, userMessage);
         } catch (Exception e) {
-           log.error(e.getMessage(), e);
+            log.error(e.getMessage(), e);
         }
+    }
+
+    private void doSendLikeMessage(UserMessageDTO userMessage) {
+        if (UserCenterServiceMessageTypeEnum.POST.getValue().equals(userMessage.getServiceMessageType())) {
+            Post post = postService.getPost(userMessage.getItemId());
+            if (Objects.nonNull(post)) {
+                userMessage.setPostId(post.getId());
+                userMessage.setToUserId(post.getUserId());
+            }
+        }
+        else if (UserCenterServiceMessageTypeEnum.POST_ONE_COMMENT.getValue().equals(userMessage.getServiceMessageType())) {
+            // 点赞一级评论
+            PostCommentParent postCommentParent = postCommentService.getPostCommentParent(userMessage.getItemId());
+            if (Objects.nonNull(postCommentParent)) {
+                userMessage.setPostId(postCommentParent.getItemId());
+                userMessage.setContent(postCommentParent.getContent());
+                userMessage.setToUserId(postCommentParent.getUserId());
+            }
+        } else if (UserCenterServiceMessageTypeEnum.POST_TWO_COMMENT.getValue().equals(userMessage.getServiceMessageType())) {
+            // 点赞二级评论
+            PostCommentChild postCommentChild = postCommentService.getPostCommentChild(userMessage.getItemId());
+            if (Objects.nonNull(postCommentChild)) {
+                userMessage.setPostId(postCommentChild.getItemId());
+                userMessage.setContent(postCommentChild.getContent());
+                userMessage.setToUserId(postCommentChild.getUserId());
+            }
+        }
+        sendMessage(TopicConstant.USER_MESSAGE + ":" + TopicConstant.TAG_LIKE, userMessage);
     }
 
     @TransactionalEventListener(fallbackExecution = true)
     public void sendCommentMessage(CommentEvent commentEvent) {
+        UserMessageDTO userMessage = commentEvent.getUserMessage();
         try {
-            UserMessageDTO userMessage = commentEvent.getUserMessage();
-            sendMessage(TopicConstant.USER_MESSAGE + ":" + TopicConstant.TAG_COMMENT, userMessage);
+            if (commentEvent.isAsync()) {
+                mqSenderExecutor.execute(() -> doSendCommentMessage(userMessage));
+            } else {
+                doSendCommentMessage(userMessage);
+            }
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }
+    }
+
+    private void doSendCommentMessage(UserMessageDTO userMessage) {
+        sendMessage(TopicConstant.USER_MESSAGE + ":" + TopicConstant.TAG_COMMENT, userMessage);
     }
 
     private void sendMessage(String topic, UserMessageDTO userMessage) {
