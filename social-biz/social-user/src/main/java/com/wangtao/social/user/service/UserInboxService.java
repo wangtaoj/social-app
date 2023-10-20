@@ -50,7 +50,7 @@ public class UserInboxService {
         return ChainWrappers.lambdaQueryChain(userInboxMapper)
                 .eq(UserInbox::getToUserId, userId)
                 .eq(UserInbox::getMessageType, messageType.getValue())
-                .gt(readPositionId > 0, UserInbox::getReadPositionId, readPositionId)
+                .gt(readPositionId > 0, UserInbox::getId, readPositionId)
                 .count().intValue();
     }
 
@@ -85,13 +85,16 @@ public class UserInboxService {
                 messageDTO.getMessageType().getValue()
         );
         if (CollectionUtils.isNotEmpty(page.getRecords())) {
-            Long id = page.getRecords().get(0).getId();
             // 更新读取位置, 取最大的一条
-            ChainWrappers.lambdaUpdateChain(userInboxMapper)
-                    .set(UserInbox::getReadPositionId, id)
-                    .set(UserInbox::getUpdateTime, LocalDateTime.now())
-                    .eq(UserInbox::getId, id)
-                    .update();
+            Long id = page.getRecords().get(0).getId();
+            Long readPositionId = page.getRecords().get(0).getReadPositionId();
+            if (readPositionId == 0) {
+                ChainWrappers.lambdaUpdateChain(userInboxMapper)
+                        .set(UserInbox::getReadPositionId, id)
+                        .set(UserInbox::getUpdateTime, LocalDateTime.now())
+                        .eq(UserInbox::getId, id)
+                        .update();
+            }
         }
         return page;
     }
