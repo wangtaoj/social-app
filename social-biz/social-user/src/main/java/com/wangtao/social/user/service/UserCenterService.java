@@ -18,13 +18,16 @@ public class UserCenterService {
     @Autowired
     private UserInboxService userInboxService;
 
+    @Autowired
+    private SysOutboxService sysOutboxService;
+
     public MessageStatisticsVO messageStatistics() {
         Long userId = SessionUserHolder.getSessionUser().getId();
         MessageStatisticsVO statisticsVO = new MessageStatisticsVO();
         statisticsVO.setLikeCount(userInboxService.getUnReadLikeCount(userId));
         statisticsVO.setCommentCount(userInboxService.getUnReadCommentCount(userId));
         statisticsVO.setFollowCount(userInboxService.getUnReadFollowCount(userId));
-        // TODO: 系统消息
+        statisticsVO.setSysCount(sysOutboxService.getUnReadSysMsgCount(userId));
         statisticsVO.setTotal(statisticsVO.getLikeCount() + statisticsVO.getCommentCount() + statisticsVO.getSysCount()+ statisticsVO.getFollowCount());
         return statisticsVO;
     }

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wangtao.social.user.mapper.UserReadSysOutboxMapper">
+
+  <insert id="updateReadLog">
+    insert into ss_user_read_sys_outbox(
+      sys_outbox_id,
+      user_id,
+      create_time,
+      update_time
+    ) values (
+      #{sysOutboxId},
+      #{userId},
+      #{createTime},
+      #{updateTime}
+    )
+    on duplicate key update
+      sys_outbox_id = VALUES(sys_outbox_id),
+      update_time = VALUES(update_time)
+  </insert>
+</mapper>

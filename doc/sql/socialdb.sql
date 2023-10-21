@@ -94,3 +94,21 @@ CREATE TABLE `ss_user_inbox` (
     UNIQUE KEY `uk_uuid` (`uuid`),
     KEY `idx_to_user_id_message_type` (`to_user_id`, `message_type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `ss_sys_outbox` (
+    `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键id',
+    `content` varchar(2000) NOT NULL COMMENT '内容',
+    `create_time` datetime COMMENT '创建时间',
+    `update_time` datetime COMMENT '修改时间',
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `ss_user_read_sys_outbox` (
+    `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键id',
+    `sys_outbox_id` bigint NOT NULL COMMENT '系统收件箱数据读取id',
+    `user_id` bigint NOT NULL COMMENT '读取的用户id',
+    `create_time` datetime COMMENT '创建时间',
+    `update_time` datetime COMMENT '修改时间',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `uk_user_id` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
