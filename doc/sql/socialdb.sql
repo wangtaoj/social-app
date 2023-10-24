@@ -112,3 +112,23 @@ CREATE TABLE `ss_user_read_sys_outbox` (
     PRIMARY KEY (`id`),
     UNIQUE KEY `uk_user_id` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `ss_user_follow` (
+    `id` bigint NOT NULL COMMENT '主键id',
+    `user_id` bigint NOT NULL COMMENT '用户id',
+    `follow_user_id` bigint NOT NULL COMMENT '关注的用户id',
+    `status` tinyint DEFAULT '1' COMMENT '状态，false未关注，true关注',
+    `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+    `update_time` datetime DEFAULT NULL COMMENT '修改时间',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `uk_user_id_follow_user_id` (`user_id`,`follow_user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `ss_user_follower` (
+    `id` bigint NOT NULL COMMENT '主键id',
+    `user_id` bigint NOT NULL COMMENT '用户id',
+    `follower_id` bigint NOT NULL COMMENT '粉丝id',
+    `status` tinyint DEFAULT '1' COMMENT '状态，false未关注，true关注',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `uk_user_id_follower_id` (`user_id`,`follower_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

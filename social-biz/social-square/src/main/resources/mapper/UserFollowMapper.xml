@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wangtao.social.square.mapper.UserFollowMapper">
+
+  <resultMap id="BaseResultMap" type="com.wangtao.social.square.po.UserFollow">
+    <id property="id" column="id" jdbcType="BIGINT"/>
+    <result property="userId" column="user_id" jdbcType="BIGINT"/>
+    <result property="followUserId" column="follow_user_id" jdbcType="BIGINT"/>
+    <result property="status" column="status" jdbcType="TINYINT"/>
+    <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+    <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+  </resultMap>
+
+  <insert id="follow">
+    insert into ss_user_follow(
+      id,
+      user_id,
+      follow_user_id,
+     `status`,
+      create_time,
+      update_time
+    )
+    values
+    (
+      #{id},
+      #{userId},
+      #{followUserId},
+      #{status},
+      #{createTime},
+      #{updateTime}
+    )
+    on duplicate key update
+     `status` = VALUES(`status`),
+     `update_time` = VALUES(`update_time`)
+  </insert>
+</mapper>
