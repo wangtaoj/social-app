@@ -110,6 +110,24 @@ public class MessageSender {
         sendMessage(TopicConstant.USER_MESSAGE + ":" + TopicConstant.TAG_COMMENT, userMessage);
     }
 
+    @TransactionalEventListener(fallbackExecution = true)
+    public void sendFollowMessage(FollowEvent followEvent) {
+        UserMessageDTO userMessage = followEvent.getUserMessage();
+        try {
+            if (followEvent.isAsync()) {
+                mqSenderExecutor.execute(() -> doSendFollowMessage(userMessage));
+            } else {
+                doSendFollowMessage(userMessage);
+            }
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        }
+    }
+
+    private void doSendFollowMessage(UserMessageDTO userMessage) {
+        sendMessage(TopicConstant.USER_MESSAGE + ":" + TopicConstant.TAG_FOLLOW, userMessage);
+    }
+
     private void sendMessage(String topic, UserMessageDTO userMessage) {
         userMessage.setUuid(UuidUtils.uuid());
         checkMessage(userMessage);

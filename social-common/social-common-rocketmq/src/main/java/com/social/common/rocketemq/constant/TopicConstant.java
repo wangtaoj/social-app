@@ -14,4 +14,6 @@ public interface TopicConstant {
     String TAG_LIKE = "like";
 
     String TAG_COMMENT = "comment";
+
+    String TAG_FOLLOW = "follow";
 }
