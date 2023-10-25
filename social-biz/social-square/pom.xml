@@ -43,6 +43,12 @@
     </dependency>
 
     <dependency>
+      <groupId>com.wangtao</groupId>
+      <artifactId>social-api-square</artifactId>
+      <version>${social-app.version}</version>
+    </dependency>
+
+    <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-test</artifactId>
       <scope>test</scope>

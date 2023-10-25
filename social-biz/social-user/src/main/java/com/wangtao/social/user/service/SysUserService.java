@@ -1,7 +1,10 @@
 package com.wangtao.social.user.service;
 
+import cn.hutool.core.util.DesensitizedUtil;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.wangtao.social.api.square.feign.FollowFeignClient;
+import com.wangtao.social.api.square.vo.FollowStatisticsVO;
 import com.wangtao.social.api.user.vo.UserVO;
 import com.wangtao.social.common.core.enums.ResponseEnum;
 import com.wangtao.social.common.core.exception.BusinessException;
@@ -42,6 +45,9 @@ public class SysUserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private FollowFeignClient followFeignClient;
+
     public SysUser selectByPhone(String phone) {
         Wrapper<SysUser> queryWrapper = new LambdaQueryWrapper<SysUser>()
                 .eq(SysUser::getPhone, phone);
@@ -67,6 +73,17 @@ public class SysUserService {
         Long id = SessionUserHolder.getSessionUser().getId();
         SysUser sysUser = sysUserMapper.selectById(id);
         return userConverter.convertToDTO(sysUser);
+    }
+
+    public UserDTO infoById(Long id) {
+        Long loginUserId = SessionUserHolder.getSessionUser().getId();
+        SysUser sysUser = sysUserMapper.selectById(id);
+        UserDTO userDTO = userConverter.convertToDTO(sysUser);
+        // 中间数字变成*
+        userDTO.setPhone(DesensitizedUtil.mobilePhone(userDTO.getPhone()));
+        FollowStatisticsVO followStatistics = followFeignClient.getFollowStatisticsInfo(id, loginUserId);
+        userDTO.setFollowInfo(followStatistics);
+        return userDTO;
     }
 
     public void updateInfo(UserDTO user) {

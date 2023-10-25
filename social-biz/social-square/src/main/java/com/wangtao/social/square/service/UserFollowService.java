@@ -3,6 +3,7 @@ package com.wangtao.social.square.service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
+import com.wangtao.social.api.square.vo.FollowStatisticsVO;
 import com.wangtao.social.api.user.feign.UserFeignClient;
 import com.wangtao.social.api.user.vo.UserVO;
 import com.wangtao.social.common.core.enums.ResponseEnum;
@@ -68,8 +69,8 @@ public class UserFollowService implements ApplicationContextAware {
         // 粉丝对象
         UserFollower userFollower = new UserFollower();
         userFollower.setUserId(followUserId);
-        userFollow.setFollowUserId(userId);
-        userFollow.setStatus(followStatus);
+        userFollower.setFollowerId(userId);
+        userFollower.setStatus(followStatus);
 
         userFollowMapper.follow(userFollow);
         userFollowerMapper.follower(userFollower);
@@ -138,6 +139,30 @@ public class UserFollowService implements ApplicationContextAware {
             });
         }
         return new Page<>();
+    }
+
+    public FollowStatisticsVO getFollowStatistics(Long userId, Long loginUserId) {
+        FollowStatisticsVO followStatistics = new FollowStatisticsVO();
+        int followCount = ChainWrappers.lambdaQueryChain(userFollowMapper)
+                .eq(UserFollow::getUserId, userId)
+                .eq(UserFollow::getStatus, Boolean.TRUE)
+                .count().intValue();
+
+        int followerCount = ChainWrappers.lambdaQueryChain(userFollowerMapper)
+                .eq(UserFollower::getUserId, userId)
+                .eq(UserFollower::getStatus, Boolean.TRUE)
+                .count().intValue();
+
+        // 当前登录人是否关注了userId
+        boolean isFollow = ChainWrappers.lambdaQueryChain(userFollowMapper)
+                .eq(UserFollow::getUserId, loginUserId)
+                .eq(UserFollow::getFollowUserId, userId)
+                .eq(UserFollow::getStatus, Boolean.TRUE)
+                .exists();
+        followStatistics.setFollowCount(followCount);
+        followStatistics.setFollowerCount(followerCount);
+        followStatistics.setFollow(isFollow);
+        return followStatistics;
     }
 
     @Override

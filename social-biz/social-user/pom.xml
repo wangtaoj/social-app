@@ -37,6 +37,12 @@
     </dependency>
 
     <dependency>
+      <groupId>com.wangtao</groupId>
+      <artifactId>social-api-square</artifactId>
+      <version>${social-app.version}</version>
+    </dependency>
+
+    <dependency>
       <groupId>cn.hutool</groupId>
       <artifactId>hutool-captcha</artifactId>
     </dependency>

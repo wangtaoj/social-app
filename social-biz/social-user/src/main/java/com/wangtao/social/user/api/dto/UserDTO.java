@@ -1,6 +1,7 @@
 package com.wangtao.social.user.api.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.wangtao.social.api.square.vo.FollowStatisticsVO;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -54,4 +55,9 @@ public class UserDTO {
      * 简介
      */
     private String intro;
+
+    /**
+     * 关注统计信息
+     */
+    private FollowStatisticsVO followInfo;
 }

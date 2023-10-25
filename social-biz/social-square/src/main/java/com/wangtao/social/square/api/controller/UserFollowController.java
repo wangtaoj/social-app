@@ -8,6 +8,8 @@ import com.wangtao.social.square.service.UserFollowService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
  * Created at 2023-10-24
  */
 @ServerReponseDecorator
-@RequestMapping("/api/userfollow")
+@RequestMapping("/api/userFollow")
 @RestController
 public class UserFollowController {
 
@@ -42,8 +44,8 @@ public class UserFollowController {
      * @param request 参数
      * @return 关注列表
      */
-    @GetMapping("/followUserPage")
-    public IPage<UserFollowVO> followUserPage(@Validated UserFollowDTO request) {
+    @PostMapping("/followUserPage")
+    public IPage<UserFollowVO> followUserPage(@Validated @RequestBody UserFollowDTO request) {
         return userFollowService.listFollow(request);
     }
 
@@ -53,8 +55,8 @@ public class UserFollowController {
      * @param request 参数
      * @return 粉丝列表
      */
-    @GetMapping("/followerUserPage")
-    public IPage<UserFollowVO> followerUserPage(@Validated UserFollowDTO request) {
+    @PostMapping("/followerUserPage")
+    public IPage<UserFollowVO> followerUserPage(@Validated @RequestBody UserFollowDTO request) {
         return userFollowService.listFollower(request);
     }
 }

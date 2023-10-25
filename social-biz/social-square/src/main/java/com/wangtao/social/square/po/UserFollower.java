@@ -4,9 +4,10 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.wangtao.social.common.core.model.BaseModel;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.io.Serializable;
 
 /**
  * @author wangtao
@@ -15,7 +16,7 @@ import lombok.Setter;
 @Setter
 @Getter
 @TableName(value ="ss_user_follower")
-public class UserFollower extends BaseModel {
+public class UserFollower implements Serializable {
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

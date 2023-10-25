@@ -9,6 +9,6 @@
     <version>1.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>social-api-user</artifactId>
+  <artifactId>social-api-square</artifactId>
 
 </project>
