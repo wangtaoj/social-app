@@ -104,7 +104,9 @@ public class PostService implements ApplicationContextAware {
     }
 
     public IPage<PostVO> listMyPost(PostQueryDTO postQuery) {
-        postQuery.setUserId(SessionUserHolder.getSessionUser().getId());
+        if (Objects.isNull(postQuery.getUserId())) {
+            postQuery.setUserId(SessionUserHolder.getSessionUser().getId());
+        }
         IPage<Post> tmpPage = new LambdaQueryChainWrapper<>(postMapper)
                 .eq(Post::getUserId, postQuery.getUserId())
                 .orderByDesc(Post::getCreateTime)
