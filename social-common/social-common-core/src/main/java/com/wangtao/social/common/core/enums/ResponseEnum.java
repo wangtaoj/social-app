@@ -15,6 +15,8 @@ public enum ResponseEnum {
 
     PARAM_ILLEGAL("E0000002", "参数不合法", HttpStatus.BAD_REQUEST),
 
+    SYS_LIMIT_FLOW("E0000003", "请求太频繁啦, 已限流", HttpStatus.BAD_REQUEST),
+
     AUTH_FAIL("E0010001", "认证失败", HttpStatus.UNAUTHORIZED),
 
     PHONE_REGISTERED("E0010002", "手机号已注册"),

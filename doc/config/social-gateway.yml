@@ -7,6 +7,15 @@ spring:
             allowedOrigins: "*"
             allowedMethods: "*"
             allowedHeaders: "*"
+      default-filters:
+        - name: CustomizeRateLimiter
+          args:
+            key-resolver: "#{@ipKeyResolver}"
+            redis-rate-limiter:
+              # 令牌桶填充平均速率(单位为秒), 即每秒访问数
+              replenish-rate: 10
+              # 令牌桶上限, 最大访问数
+              burst-capacity: 40
       discovery:
         locator:
           # 此配置在配置中心修改后不会实时生效, 需要重启应用
