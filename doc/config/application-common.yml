@@ -24,7 +24,7 @@ spring:
       test-on-borrow: false
       # 归还连接时要不要对该连接进行有效性校验
       test-on-return: false
-      # 是否需要检查空闲的连接有效性
+      # 申请连接时是否需要检查连接有效性(当连接的空闲时间大于timeBetweenEvictionRunsMillis才检查)
       test-while-idle: true
       # 用来检测连接是否有效的sql
       validation-query: select 1
