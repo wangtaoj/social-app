@@ -27,7 +27,9 @@ public enum ResponseEnum {
 
     LOGOUT_FAIL("E0010005", "用户登出失败"),
 
-    UPLOAD_FAIL("E0020001", "文件上传失败")
+    UPLOAD_FAIL("E0020001", "文件上传失败"),
+
+    ES_SYNC_FAIL("E0030001", "ES数据同步失败")
     ;
 
     private final String code;

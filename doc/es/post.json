@@ -1,0 +1,17 @@
+{
+  "mappings": {
+    "dynamic": "strict",
+    "properties": {
+      "id": {
+        "type": "long"
+      },
+      "userId": {
+        "type": "long"
+      },
+      "content": {
+        "type": "text",
+        "analyzer": "ik_max_word"
+      }
+    }
+  }
+}

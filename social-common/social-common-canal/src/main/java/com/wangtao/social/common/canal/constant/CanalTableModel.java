@@ -11,7 +11,7 @@ import java.util.Objects;
 @Getter
 public enum CanalTableModel {
 
-    SS_POST("social", "ss_post"),
+    SS_POST("socialdb", "ss_post"),
 
     UN_KNOWN("UN_KNOWN", "UN_KNOWN"),
     ;
