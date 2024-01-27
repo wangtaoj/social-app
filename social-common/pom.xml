@@ -18,6 +18,7 @@
     <module>social-common-user</module>
     <module>social-common-rocketmq</module>
     <module>social-common-es</module>
+    <module>social-common-canal</module>
   </modules>
 
   <dependencies>
