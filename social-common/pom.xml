@@ -17,6 +17,7 @@
     <module>social-common-square</module>
     <module>social-common-user</module>
     <module>social-common-rocketmq</module>
+    <module>social-common-es</module>
   </modules>
 
   <dependencies>
