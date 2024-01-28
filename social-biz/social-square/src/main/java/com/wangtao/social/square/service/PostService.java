@@ -46,6 +46,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -149,20 +150,22 @@ public class PostService implements ApplicationContextAware {
     }
 
     private IPage<EsPost> searchByEs(PostSearchDTO postSearch) {
-        if (StringUtils.isBlank(postSearch.getKeyword())) {
-            throw new BusinessException(ResponseEnum.PARAM_ILLEGAL, "关键词不能为空");
-        }
+        List<Query> queryList = new ArrayList<>();
         Query byDelFlg = QueryBuilders.term()
                 .field("delFlg")
                 .value(GlobalConstant.NOT_DELETED)
                 .build()._toQuery();
-        Query byContent = QueryBuilders.match()
-                .field("content")
-                .query(postSearch.getKeyword())
-                .build()._toQuery();
+        queryList.add(byDelFlg);
+        if (StringUtils.isNotBlank(postSearch.getKeyword())) {
+            Query byContent = QueryBuilders.match()
+                    .field("content")
+                    .query(postSearch.getKeyword())
+                    .build()._toQuery();
+            queryList.add(byContent);
+        }
 
         Query query = QueryBuilders.bool()
-                .must(byDelFlg, byContent)
+                .must(queryList)
                 .build()._toQuery();
 
         SearchResponse<EsPost> response;
