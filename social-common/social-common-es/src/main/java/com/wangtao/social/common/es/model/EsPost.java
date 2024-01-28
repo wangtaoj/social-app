@@ -29,4 +29,10 @@ public class EsPost {
      * 帖子内容
      */
     private String content;
+
+    /**
+     * 删除标志
+     */
+    @JsonAlias("del_flg")
+    private Integer delFlg;
 }

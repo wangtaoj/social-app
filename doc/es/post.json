@@ -11,6 +11,9 @@
       "content": {
         "type": "text",
         "analyzer": "ik_max_word"
+      },
+      "delFlg": {
+        "type": "integer"
       }
     }
   }

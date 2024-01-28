@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.util.Objects;
 
 /**
  * @author wangtao
@@ -39,7 +40,20 @@ public class PostCanalProcessor extends AbstractCanalProcessor<EsPost> {
 
     @Override
     protected void doUpdate(CanalResult<EsPost> canalResult) {
-
+        EsPost esPostOld = canalResult.getBeforeData();
+        EsPost esPost = canalResult.getAfterData();
+        // 修改了删除标志, 更新
+        if (!Objects.equals(esPost.getDelFlg(), esPostOld.getDelFlg())) {
+            try {
+                esClient.index(builder -> builder
+                        .index(EsIndexEnum.POST.getName())
+                        .id(String.valueOf(esPost.getId()))
+                        .document(esPost)
+                );
+            } catch (IOException e) {
+                throw new BusinessException(ResponseEnum.ES_SYNC_FAIL, "es更新帖子异常, id: " + esPost.getId(), e);
+            }
+        }
     }
 
     @Override
