@@ -5,6 +5,7 @@ import com.wangtao.social.common.core.response.ServerReponseDecorator;
 import com.wangtao.social.square.api.dto.AddPostDTO;
 import com.wangtao.social.square.api.dto.PostCommentDTO;
 import com.wangtao.social.square.api.dto.PostQueryDTO;
+import com.wangtao.social.square.api.dto.PostSearchDTO;
 import com.wangtao.social.square.api.vo.CommentVO;
 import com.wangtao.social.square.api.vo.PostVO;
 import com.wangtao.social.square.api.vo.UserPostStatisticsVO;
@@ -68,6 +69,16 @@ public class PostController {
     @PostMapping("/listMyPost")
     public IPage<PostVO> listMyPost(@RequestBody PostQueryDTO postQuery) {
         return postService.listMyPost(postQuery);
+    }
+
+    /**
+     * 检索帖子
+     * @param postSearch 检索参数
+     * @return 帖子列表
+     */
+    @PostMapping("/search")
+    public IPage<PostVO> search(@RequestBody PostSearchDTO postSearch) {
+        return postService.search(postSearch);
     }
 
     /**

@@ -1,20 +1,30 @@
 package com.wangtao.social.square.service;
 
+import co.elastic.clients.elasticsearch.ElasticsearchClient;
+import co.elastic.clients.elasticsearch._types.query_dsl.Query;
+import co.elastic.clients.elasticsearch._types.query_dsl.QueryBuilders;
+import co.elastic.clients.elasticsearch.core.SearchRequest;
+import co.elastic.clients.elasticsearch.core.SearchResponse;
+import co.elastic.clients.elasticsearch.core.search.Hit;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
 import com.baomidou.mybatisplus.extension.conditions.update.LambdaUpdateChainWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wangtao.social.api.user.feign.UserFeignClient;
 import com.wangtao.social.api.user.vo.UserVO;
+import com.wangtao.social.common.core.constant.GlobalConstant;
 import com.wangtao.social.common.core.enums.ResponseEnum;
 import com.wangtao.social.common.core.exception.BusinessException;
 import com.wangtao.social.common.core.session.SessionUserHolder;
+import com.wangtao.social.common.es.constant.EsIndexEnum;
+import com.wangtao.social.common.es.model.EsPost;
 import com.wangtao.social.common.user.dto.UserMessageDTO;
 import com.wangtao.social.common.user.enums.UserCenterMessageTypeEnum;
 import com.wangtao.social.common.user.enums.UserCenterServiceMessageTypeEnum;
 import com.wangtao.social.square.api.dto.AddPostDTO;
 import com.wangtao.social.square.api.dto.PostCommentDTO;
 import com.wangtao.social.square.api.dto.PostQueryDTO;
+import com.wangtao.social.square.api.dto.PostSearchDTO;
 import com.wangtao.social.square.api.vo.CommentVO;
 import com.wangtao.social.square.api.vo.PostVO;
 import com.wangtao.social.square.api.vo.UserPostStatisticsVO;
@@ -26,6 +36,7 @@ import com.wangtao.social.square.po.Post;
 import com.wangtao.social.square.po.PostCommentChild;
 import com.wangtao.social.square.po.PostCommentParent;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -34,7 +45,9 @@ import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -48,6 +61,9 @@ import java.util.stream.Collectors;
 public class PostService implements ApplicationContextAware {
 
     private ApplicationContext applicationContext;
+
+    @Autowired
+    private ElasticsearchClient esClient;
 
     @Autowired
     private PostConverter postConverter;
@@ -114,6 +130,60 @@ public class PostService implements ApplicationContextAware {
 
         IPage<PostVO> page = tmpPage.convert(postConverter::convertToVO);
         fillExtraInfo(page);
+        return page;
+    }
+
+    public IPage<PostVO> search(PostSearchDTO postSearch) {
+        IPage<EsPost> esPostPage = searchByEs(postSearch);
+        if (CollectionUtils.isEmpty(esPostPage.getRecords())) {
+            return new Page<>(postSearch.getCurrent(), postSearch.getSize());
+        }
+        List<Long> ids = esPostPage.getRecords().stream().map(EsPost::getId).collect(Collectors.toList());
+
+        List<Post> postTmps = postMapper.selectBatchIds(ids);
+        List<PostVO> posts = postTmps.stream().map(postConverter::convertToVO).collect(Collectors.toList());
+        IPage<PostVO> page = Page.of(esPostPage.getCurrent(), esPostPage.getSize(), esPostPage.getTotal());
+        page.setRecords(posts);
+        fillExtraInfo(page);
+        return page;
+    }
+
+    private IPage<EsPost> searchByEs(PostSearchDTO postSearch) {
+        if (StringUtils.isBlank(postSearch.getKeyword())) {
+            throw new BusinessException(ResponseEnum.PARAM_ILLEGAL, "关键词不能为空");
+        }
+        Query byDelFlg = QueryBuilders.term()
+                .field("delFlg")
+                .value(GlobalConstant.NOT_DELETED)
+                .build()._toQuery();
+        Query byContent = QueryBuilders.match()
+                .field("content")
+                .query(postSearch.getKeyword())
+                .build()._toQuery();
+
+        Query query = QueryBuilders.bool()
+                .must(byDelFlg, byContent)
+                .build()._toQuery();
+
+        SearchResponse<EsPost> response;
+        try {
+            response = esClient.search(
+                    new SearchRequest.Builder()
+                            .index(EsIndexEnum.POST.getName())
+                            .query(query)
+                            .from(postSearch.offset().intValue())
+                            .size(postSearch.getSize().intValue())
+                            .build(),
+                    EsPost.class
+            );
+        } catch (IOException e) {
+            throw new BusinessException(ResponseEnum.ES_SEARCH_FAIL);
+        }
+        List<EsPost> esPosts = response.hits().hits().stream().map(Hit::source).collect(Collectors.toList());
+        assert response.hits().total() != null;
+        long total = response.hits().total().value();
+        IPage<EsPost> page = Page.of(postSearch.getCurrent(), postSearch.getSize(), total);
+        page.setRecords(esPosts);
         return page;
     }
 

@@ -29,7 +29,9 @@ public enum ResponseEnum {
 
     UPLOAD_FAIL("E0020001", "文件上传失败"),
 
-    ES_SYNC_FAIL("E0030001", "ES数据同步失败")
+    ES_SYNC_FAIL("E0030001", "ES数据同步失败"),
+
+    ES_SEARCH_FAIL("E0030002", "ES检索数据失败")
     ;
 
     private final String code;

@@ -20,4 +20,8 @@ public class PageParam {
      * 当前页
      */
     private Long current = 1L;
+
+    public Long offset() {
+        return (current - 1) * size;
+    }
 }
