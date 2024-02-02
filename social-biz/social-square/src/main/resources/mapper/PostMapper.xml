@@ -50,7 +50,7 @@
 
   <select id="selectLikeCountByUserId" resultType="_long">
     select
-      sum(like_count)
+      ifnull(sum(like_count), 0)
     from ss_post
     where del_flg = 0
     and user_id = #{userId}
