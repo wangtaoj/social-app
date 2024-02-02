@@ -96,7 +96,8 @@ public class PostService implements ApplicationContextAware {
         PostVO postVO = postConverter.convertToVO(post);
         postVO.setLike(false);
         postVO.setCommentCount(0);
-        return postConverter.convertToVO(post);
+        postVO.setLikeCount(0);
+        return postVO;
     }
 
     public void deletePost(Long id) {
