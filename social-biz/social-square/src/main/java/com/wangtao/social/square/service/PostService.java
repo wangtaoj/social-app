@@ -5,7 +5,7 @@ import co.elastic.clients.elasticsearch._types.query_dsl.Query;
 import co.elastic.clients.elasticsearch._types.query_dsl.QueryBuilders;
 import co.elastic.clients.elasticsearch.core.SearchRequest;
 import co.elastic.clients.elasticsearch.core.SearchResponse;
-import co.elastic.clients.elasticsearch.core.search.Hit;
+import co.elastic.clients.elasticsearch.core.search.HighlightField;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
 import com.baomidou.mybatisplus.extension.conditions.update.LambdaUpdateChainWrapper;
@@ -52,6 +52,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -140,9 +141,18 @@ public class PostService implements ApplicationContextAware {
         if (CollectionUtils.isEmpty(esPostPage.getRecords())) {
             return new Page<>(postSearch.getCurrent(), postSearch.getSize());
         }
+        Map<Long, EsPost> esPostMap = esPostPage.getRecords().stream()
+                .collect(Collectors.toMap(EsPost::getId, Function.identity()));
         List<Long> ids = esPostPage.getRecords().stream().map(EsPost::getId).collect(Collectors.toList());
-
         List<Post> postTmps = postMapper.selectBatchIds(ids);
+        // 设置高亮内容
+        for (Post postTmp : postTmps) {
+            EsPost esPost = esPostMap.get(postTmp.getId());
+            if (Objects.nonNull(esPost)) {
+                postTmp.setContent(esPost.getContent());
+            }
+        }
+
         List<PostVO> posts = postTmps.stream().map(postConverter::convertToVO).collect(Collectors.toList());
         IPage<PostVO> page = Page.of(esPostPage.getCurrent(), esPostPage.getSize(), esPostPage.getTotal());
         page.setRecords(posts);
@@ -177,13 +187,29 @@ public class PostService implements ApplicationContextAware {
                             .query(query)
                             .from(postSearch.offset().intValue())
                             .size(postSearch.getSize().intValue())
+                            .highlight(h -> h
+                                    .preTags("<b style='color:red'>")
+                                    .postTags("</b>")
+                                    .fields("content", new HighlightField.Builder().build())
+                            )
                             .build(),
                     EsPost.class
             );
         } catch (IOException e) {
             throw new BusinessException(ResponseEnum.ES_SEARCH_FAIL);
         }
-        List<EsPost> esPosts = response.hits().hits().stream().map(Hit::source).collect(Collectors.toList());
+        List<EsPost> esPosts = response.hits().hits().stream()
+                .map(item -> {
+                    EsPost esPost = item.source();
+                    // 获取高亮结果
+                    List<String> contents = item.highlight().get("content");
+                    if (CollectionUtils.isNotEmpty(contents)) {
+                        assert esPost != null;
+                        esPost.setContent(contents.get(0));
+                    }
+                    return esPost;
+                })
+                .collect(Collectors.toList());
         assert response.hits().total() != null;
         long total = response.hits().total().value();
         IPage<EsPost> page = Page.of(postSearch.getCurrent(), postSearch.getSize(), total);
