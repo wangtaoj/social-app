@@ -6,7 +6,7 @@ CREATE TABLE `sys_user`
     `id` bigint NOT NULL AUTO_INCREMENT,
     `phone` varchar(15)  DEFAULT NULL COMMENT '电话',
     `password` varchar(200) DEFAULT NULL COMMENT '密码',
-    `avatar_url` varchar(500) COMMENT '头像',
+    `avatar_url` varchar(500) DEFAULT 'http://127.0.0.1:9000/social-app/img/20240202/484b42ac9d104f25bb0a3c77b45bb50b.jpeg' COMMENT '头像',
     `nick_name` varchar(50) DEFAULT '默认用户' COMMENT '昵称',
     `openid` varchar(200),
     `session_key` varchar(200),
