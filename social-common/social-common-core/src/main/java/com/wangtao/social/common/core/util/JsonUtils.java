@@ -82,7 +82,7 @@ public class JsonUtils {
         // 忽略反序列化时在json字符串中存在, 但在java对象中不存在的属性
         objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
 
-        // BigDecimal.toPlainString(), 这样不会有科学计数法
+        // BigDecimal.toPlainString(), 这样不会有科学计数法(序列化后仍是数字, 不是字符串)
         objectMapper.enable(JsonGenerator.Feature.WRITE_BIGDECIMAL_AS_PLAIN);
     }
 
