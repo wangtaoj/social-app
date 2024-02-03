@@ -38,7 +38,8 @@ public class JacksonCustomizer implements Jackson2ObjectMapperBuilderCustomizer 
          * 4. 序列化时包含所有字段
          * 5. 在序列化一个空对象时时不抛出异常
          * 6. 忽略反序列化时在json字符串中存在, 但在java对象中不存在的属性
-         * 7. BigDecimal.toPlainString()方法, 这样不会有科学计数法
+         * 7. BigDecimal.toPlainString()方法, 这样不会有科学计数法(序列化后仍是数字, 不是字符串)
+         *    由于上面注册了自定义的BigDecimal序列化器, 该配置便没有效果了
          */
         builder.simpleDateFormat(JavaTimeModuleUtils.STANDARD_PATTERN)
                 .modules(javaTimeModule, new Jdk8Module(), simpleModule)

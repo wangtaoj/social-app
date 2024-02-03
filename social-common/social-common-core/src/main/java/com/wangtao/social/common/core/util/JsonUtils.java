@@ -116,7 +116,7 @@ public class JsonUtils {
      * @return 返回一个T类型的对象
      */
     public static <T> T jsonToObj(String json, Class<T> cls) {
-        if (json == null || json.length() == 0) {
+        if (json == null || json.isEmpty()) {
             return null;
         }
         try {
@@ -139,7 +139,7 @@ public class JsonUtils {
      * @return 返回一个Java对象
      */
     public static <T> T jsonToObj(String json, TypeReference<T> typeReference) {
-        if (json == null || json.length() == 0) {
+        if (json == null || json.isEmpty()) {
             return null;
         }
         try {
@@ -158,7 +158,7 @@ public class JsonUtils {
      * @return 返回一个List列表
      */
     public static <T> List<T> jsonToList(String json, Class<T> cls) {
-        if (json == null || json.length() == 0) {
+        if (json == null || json.isEmpty()) {
             return Collections.emptyList();
         }
         try {
