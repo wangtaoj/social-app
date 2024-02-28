@@ -17,6 +17,8 @@ public enum ResponseEnum {
 
     SYS_LIMIT_FLOW("E0000003", "请求太频繁啦, 已限流", HttpStatus.BAD_REQUEST),
 
+    CLIENT_ERROR("E0000004", "客户端错误请求", HttpStatus.BAD_REQUEST),
+
     AUTH_FAIL("E0010001", "认证失败", HttpStatus.UNAUTHORIZED),
 
     PHONE_REGISTERED("E0010002", "手机号已注册"),
