@@ -106,8 +106,7 @@ public class AuthGlobalFilter implements GlobalFilter, EnvironmentAware {
 
     private Mono<Void> sendError(ServerHttpResponse resp, Exception e) {
         ServerResponse<?> serverResponse;
-        if (e instanceof BusinessException) {
-            BusinessException businessException = (BusinessException) e;
+        if (e instanceof BusinessException businessException) {
             serverResponse = ServerResponse.error(businessException);
             // 设置响应 code
             resp.setStatusCode(businessException.getResponseEnum().getHttpStatus());

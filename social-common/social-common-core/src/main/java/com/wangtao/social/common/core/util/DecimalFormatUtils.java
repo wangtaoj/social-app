@@ -123,20 +123,12 @@ public final class DecimalFormatUtils {
      * @return 格式化后的字符串
      */
     public static String formatMoney(Object number, int scale, RoundingMode roundingMode) {
-        String decimalPattern;
-        switch (scale) {
-            case 0:
-                decimalPattern = "";
-                break;
-            case 1:
-                decimalPattern = "0";
-                break;
-            case 2:
-                decimalPattern = "00";
-                break;
-            default:
-                decimalPattern = StringUtils.repeat('0', scale);
-        }
+        String decimalPattern = switch (scale) {
+            case 0 -> "";
+            case 1 -> "0";
+            case 2 -> "00";
+            default -> StringUtils.repeat('0', scale);
+        };
         DecimalFormat decimalFormat = new DecimalFormat("#,###." + decimalPattern);
         decimalFormat.setRoundingMode(roundingMode);
         return decimalFormat.format(number);
@@ -172,19 +164,13 @@ public final class DecimalFormatUtils {
      * @return 模式
      */
     private static String getPattern(int scale, boolean trimZeros) {
-        switch (scale) {
-            case 0:
-                return "#";
-            case 1:
-                return "#." + (trimZeros ? "#" : "0");
-            case 2:
-                return "#." + (trimZeros ? "##" : "00");
-            case 3:
-                return "#." + (trimZeros ? "###" : "000");
-            case 4:
-                return "#." + (trimZeros ? "####" : "0000");
-            default:
-                return "#." + StringUtils.repeat(trimZeros ? '#' : '0', scale);
-        }
+        return switch (scale) {
+            case 0 -> "#";
+            case 1 -> "#." + (trimZeros ? "#" : "0");
+            case 2 -> "#." + (trimZeros ? "##" : "00");
+            case 3 -> "#." + (trimZeros ? "###" : "000");
+            case 4 -> "#." + (trimZeros ? "####" : "0000");
+            default -> "#." + StringUtils.repeat(trimZeros ? '#' : '0', scale);
+        };
     }
 }

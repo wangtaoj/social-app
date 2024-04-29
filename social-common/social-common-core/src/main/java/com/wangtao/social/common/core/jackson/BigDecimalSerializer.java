@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 
 import java.io.IOException;
+import java.io.Serial;
 import java.math.BigDecimal;
 import java.util.Objects;
 
@@ -16,6 +17,7 @@ import java.util.Objects;
  */
 public class BigDecimalSerializer extends StdSerializer<BigDecimal> {
 
+    @Serial
     private static final long serialVersionUID = -82683766308966384L;
 
     public BigDecimalSerializer() {

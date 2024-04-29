@@ -8,6 +8,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.io.Serial;
+
 /**
  * @author wangtao
  * Created at 2023-10-06
@@ -18,6 +20,7 @@ import lombok.ToString;
 @TableName(value ="ss_post_comment_child")
 public class PostCommentChild extends BaseModel {
 
+    @Serial
     @TableField(exist = false)
     private static final long serialVersionUID = 5961249426538067254L;
 

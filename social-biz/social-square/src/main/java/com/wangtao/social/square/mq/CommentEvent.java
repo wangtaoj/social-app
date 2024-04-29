@@ -4,6 +4,8 @@ import com.wangtao.social.common.user.dto.UserMessageDTO;
 import lombok.Getter;
 import org.springframework.context.ApplicationEvent;
 
+import java.io.Serial;
+
 /**
  * @author wangtao
  * Created at 2023-10-18
@@ -11,6 +13,7 @@ import org.springframework.context.ApplicationEvent;
 @Getter
 public class CommentEvent extends ApplicationEvent {
 
+    @Serial
     private static final long serialVersionUID = 2959192226680744204L;
 
     private final UserMessageDTO userMessage;

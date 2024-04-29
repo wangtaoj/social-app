@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.io.Serial;
+
 /**
  * @author wangtao
  * Created at 2023-09-26
@@ -14,6 +16,7 @@ import lombok.ToString;
 @Getter
 public class PostVO extends Post {
 
+    @Serial
     private static final long serialVersionUID = 7601203071695848655L;
 
     /**

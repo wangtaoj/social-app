@@ -9,6 +9,8 @@ import com.wangtao.social.common.core.model.BaseModel;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serial;
+
 /**
  * 点赞信息
  * @author wangtao
@@ -19,6 +21,7 @@ import lombok.Setter;
 @Getter
 public class Like extends BaseModel {
 
+    @Serial
     @TableField(exist = false)
     private static final long serialVersionUID = 6603445188904700786L;
 

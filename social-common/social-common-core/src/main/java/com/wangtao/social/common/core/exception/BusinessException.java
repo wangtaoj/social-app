@@ -2,12 +2,15 @@ package com.wangtao.social.common.core.exception;
 
 import com.wangtao.social.common.core.enums.ResponseEnum;
 
+import java.io.Serial;
+
 /**
  * @author wangtao
  * Created at 2023-09-16
  */
 public class BusinessException extends SocialException {
 
+    @Serial
     private static final long serialVersionUID = 236410471132246058L;
 
     private final ResponseEnum responseEnum;

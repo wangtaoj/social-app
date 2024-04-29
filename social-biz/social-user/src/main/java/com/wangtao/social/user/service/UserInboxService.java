@@ -34,7 +34,6 @@ public class UserInboxService {
         userInboxMapper.insert(userInbox);
     }
 
-    @SuppressWarnings("unchecked")
     private long getReadPositionId(Long userId, UserCenterMessageTypeEnum messageType) {
         return ChainWrappers.lambdaQueryChain(userInboxMapper)
                 .select(UserInbox::getReadPositionId)

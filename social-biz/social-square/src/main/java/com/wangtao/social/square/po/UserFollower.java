@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 /**
@@ -18,6 +19,7 @@ import java.io.Serializable;
 @TableName(value ="ss_user_follower")
 public class UserFollower implements Serializable {
 
+    @Serial
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 

@@ -9,6 +9,7 @@ import com.wangtao.social.common.core.model.BaseModel;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 /**
@@ -20,6 +21,7 @@ import java.io.Serializable;
 @TableName(value ="sys_user")
 public class SysUser extends BaseModel implements Serializable {
 
+    @Serial
     @TableField(exist = false)
     private static final long serialVersionUID = 344979719689063146L;
 

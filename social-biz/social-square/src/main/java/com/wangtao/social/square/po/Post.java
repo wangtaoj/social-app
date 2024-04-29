@@ -11,6 +11,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.io.Serial;
+
 /**
  * 帖子
  * @author wangtao
@@ -22,6 +24,7 @@ import lombok.ToString;
 @TableName(value ="ss_post", autoResultMap = true)
 public class Post extends BaseModel {
 
+    @Serial
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 

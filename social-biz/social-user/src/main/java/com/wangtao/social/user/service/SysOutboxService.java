@@ -27,7 +27,6 @@ public class SysOutboxService {
     @Autowired
     private UserReadSysOutboxMapper userReadSysOutboxMapper;
 
-    @SuppressWarnings("unchecked")
     private long getReadPositionId(Long userId) {
         return ChainWrappers.lambdaQueryChain(userReadSysOutboxMapper)
                 .select(UserReadSysOutbox::getSysOutboxId)

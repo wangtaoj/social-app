@@ -8,6 +8,8 @@ import com.wangtao.social.common.core.model.BaseModel;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serial;
+
 /**
  * @author wangtao
  * Created at 2023-10-20
@@ -17,6 +19,7 @@ import lombok.Setter;
 @TableName(value ="ss_user_read_sys_outbox")
 public class UserReadSysOutbox extends BaseModel {
 
+    @Serial
     @TableField(exist = false)
     private static final long serialVersionUID = -7543928777740131252L;
 

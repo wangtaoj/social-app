@@ -8,6 +8,8 @@ import com.wangtao.social.common.core.model.BaseModel;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serial;
+
 /**
  * @author wangtao
  * Created at 2023-10-16
@@ -17,6 +19,7 @@ import lombok.Setter;
 @Getter
 public class UserInbox extends BaseModel {
 
+    @Serial
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 
