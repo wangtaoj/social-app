@@ -6,7 +6,7 @@
 帖子发布、搜索、点赞、评论、关注
 
 ### 技术栈
-JDK11、SpringCloud、MySQL、Redis、RocketMQ、Minio、Elasticsearch、Canal、Docker
+JDK17、SpringCloud、MySQL、Redis、RocketMQ、Minio、Elasticsearch、Canal、Docker
 
 ### API接口地址
 http://localhost:9080/doc.html
