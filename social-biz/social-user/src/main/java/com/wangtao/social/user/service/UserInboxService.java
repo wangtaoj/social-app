@@ -85,8 +85,8 @@ public class UserInboxService {
         );
         if (CollectionUtils.isNotEmpty(page.getRecords())) {
             // 更新读取位置, 取最大的一条
-            Long id = page.getRecords().get(0).getId();
-            Long readPositionId = page.getRecords().get(0).getReadPositionId();
+            Long id = page.getRecords().getFirst().getId();
+            Long readPositionId = page.getRecords().getFirst().getReadPositionId();
             if (readPositionId == 0) {
                 ChainWrappers.lambdaUpdateChain(userInboxMapper)
                         .set(UserInbox::getReadPositionId, id)

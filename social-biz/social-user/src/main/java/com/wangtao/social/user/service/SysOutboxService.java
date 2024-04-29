@@ -50,7 +50,7 @@ public class SysOutboxService {
             // 记录一下消息读取位置，默认进来就把全部消息读完了
             if (current == 1) {
                 UserReadSysOutbox userReadSysOutbox = new UserReadSysOutbox();
-                userReadSysOutbox.setSysOutboxId(page.getRecords().get(0).getId());
+                userReadSysOutbox.setSysOutboxId(page.getRecords().getFirst().getId());
                 userReadSysOutbox.setUserId(SessionUserHolder.getSessionUser().getId());
                 userReadSysOutbox.setCreateTime(LocalDateTime.now());
                 userReadSysOutbox.setUpdateTime(userReadSysOutbox.getCreateTime());

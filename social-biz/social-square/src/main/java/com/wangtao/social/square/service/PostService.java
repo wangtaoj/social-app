@@ -205,7 +205,7 @@ public class PostService implements ApplicationContextAware {
                     List<String> contents = item.highlight().get("content");
                     if (CollectionUtils.isNotEmpty(contents)) {
                         assert esPost != null;
-                        esPost.setContent(contents.get(0));
+                        esPost.setContent(contents.getFirst());
                     }
                     return esPost;
                 })
