@@ -11,6 +11,11 @@ JDK21、SpringCloud、MySQL、Redis、RocketMQ、Minio、Elasticsearch、Canal�
 ### API接口地址
 http://localhost:9080/doc.html
 
+### 域名设计
+* 前端: social.wangtao.com
+* 后台网关: gateway.social.wangtao.com
+* 图片服务: img.social.wangtao.com
+
 ### 主要细节
 * 使用knife4j、SpringDoc融合Spring Cloud Gateway输出整个项目的API文档
 * 全局统一异常处理器处理DispatcherServlet中的异常，自定义ErrorController来处理其它异常情况，如404、过滤器中的异常
