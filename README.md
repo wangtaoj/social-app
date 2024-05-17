@@ -13,6 +13,7 @@ http://localhost:9080/doc.html
 
 ### 部署&运行
 在项目根目录执行下面命令
+
 第一步: 打包与构建docker镜像
 ```bash
 sh docker.sh
