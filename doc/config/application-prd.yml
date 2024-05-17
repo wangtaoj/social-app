@@ -1,0 +1,26 @@
+db:
+  host: host.docker.internal
+  port: 3306
+  username: root
+  password: 123456
+
+redis:
+  nodes: host.docker.internal:6381,host.docker.internal:6382,host.docker.internal:6383,host.docker.internal:6384,host.docker.internal:6385,host.docker.internal:6386
+  password: 123456
+
+minio:
+  # 必须要加上http
+  endpoint: "http://host.docker.internal:9000"
+  access-key: LhulnOUakqQPuuPf6u3R
+  secret-key: adSFdJU6qojXTQXzYjNYG5BdoLsZ2DBpf7mEjpgi
+  default-bucket: social-app
+  # 客户端访问图片的地址, 使用域名代替, 使用本地地址的话别的机器访问不了
+  img-access-addr: "http://img.social.wangtao.com:9000"
+
+rocketmq:
+  host: host.docker.internal
+  port: 9876
+
+es:
+  host: host.docker.internal
+  port: 9200
