@@ -145,6 +145,6 @@ public class MinioService {
     public String getDirectAccessUrl(String bucket, String objName) {
         Objects.requireNonNull(bucket, "bucket is required!");
         Objects.requireNonNull(objName, "objName is required!");
-        return minioProperties.getEndpoint() + "/" + bucket + "/" + objName;
+        return minioProperties.getImgAccessAddr() + "/" + bucket + "/" + objName;
     }
 }
