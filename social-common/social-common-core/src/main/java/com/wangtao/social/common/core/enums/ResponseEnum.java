@@ -19,6 +19,8 @@ public enum ResponseEnum {
 
     CLIENT_ERROR("E0000004", "客户端错误请求", HttpStatus.BAD_REQUEST),
 
+    NOT_FOUND("E0000005", "not found", HttpStatus.NOT_FOUND),
+
     AUTH_FAIL("E0010001", "认证失败", HttpStatus.UNAUTHORIZED),
 
     PHONE_REGISTERED("E0010002", "手机号已注册"),

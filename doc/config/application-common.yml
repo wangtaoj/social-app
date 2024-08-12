@@ -1,4 +1,8 @@
 spring:
+  web:
+    resources:
+      # 不要添加默认的ResourceHandler(/**等)
+      add-mappings: false
   servlet:
     multipart:
       # 单次请求允许传输字节的最大值

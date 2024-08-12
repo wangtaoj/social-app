@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.NoHandlerFoundException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolation;
@@ -35,6 +36,17 @@ public class GlobalExceptionHandler {
         log.error("{} encounter a error.", request.getServletPath(), e);
         ServerResponse<?> serverResponse = ServerResponse.error(e);
         return new ResponseEntity<>(serverResponse, e.getResponseEnum().getHttpStatus());
+    }
+
+    /**
+     * 404
+     * Spring Boot3版本可再增加NoResourceFoundException
+     */
+    @ExceptionHandler({NoHandlerFoundException.class})
+    public ResponseEntity<ServerResponse<?>> notFoundException(NoHandlerFoundException e, HttpServletRequest request) {
+        log.error("{} encounter a error.", request.getServletPath(), e);
+        ServerResponse<?> serverResponse = ServerResponse.error(ResponseEnum.NOT_FOUND, e.getMessage());
+        return new ResponseEntity<>(serverResponse, ResponseEnum.NOT_FOUND.getHttpStatus());
     }
 
     /**
