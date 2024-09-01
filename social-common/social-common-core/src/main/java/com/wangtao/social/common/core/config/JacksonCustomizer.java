@@ -11,6 +11,8 @@ import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilde
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.stereotype.Component;
 
+import java.util.TimeZone;
+
 /**
  * @author wangtao
  * Created at 2021/6/4 18:29
@@ -42,6 +44,7 @@ public class JacksonCustomizer implements Jackson2ObjectMapperBuilderCustomizer 
          *    由于上面注册了自定义的BigDecimal序列化器, 该配置便没有效果了
          */
         builder.simpleDateFormat(JavaTimeModuleUtils.STANDARD_PATTERN)
+                .timeZone(TimeZone.getDefault())
                 .modules(javaTimeModule, new Jdk8Module(), simpleModule)
                 .serializationInclusion(JsonInclude.Include.ALWAYS)
                 .failOnEmptyBeans(false)
