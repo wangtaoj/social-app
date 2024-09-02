@@ -22,6 +22,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.TimeZone;
 
 /**
  * @author wangtao
@@ -41,6 +42,7 @@ public final class RedisSerializerUtils {
         ObjectMapper objectMapper = new ObjectMapper();
         // 设置java.util.Date时间类的序列化以及反序列化的格式
         objectMapper.setDateFormat(new SimpleDateFormat(STANDARD_PATTERN));
+        objectMapper.setTimeZone(TimeZone.getDefault());
 
         // 设置BigDecimal
         objectMapper.enable(JsonGenerator.Feature.WRITE_BIGDECIMAL_AS_PLAIN);
