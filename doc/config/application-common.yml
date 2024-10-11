@@ -1,8 +1,8 @@
 spring:
   web:
     resources:
-      # 不要添加默认的ResourceHandler(/**等)
-      add-mappings: false
+      # 是否添加默认的ResourceHandler(/**等)
+      add-mappings: true
   mvc:
     servlet:
       # 启动时就初始化DispatcherServlet
