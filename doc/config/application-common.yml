@@ -26,8 +26,8 @@ spring:
       max-active: 20
       # 最小连接数量
       min-idle: 5
-      # 获取连接等待的超时时间(毫秒)
-      max-wait: 60000
+      # 获取连接等待的超时时间(毫秒), 10s
+      max-wait: 10000
       # 获取连接时要不要对该连接进行有效性校验
       test-on-borrow: false
       # 归还连接时要不要对该连接进行有效性校验
@@ -36,13 +36,12 @@ spring:
       test-while-idle: true
       # 用来检测连接是否有效的sql
       validation-query: select 1
-      # 配置间隔多久才进行一次检测, 检测需要关闭的空闲连接，单位是毫秒
+      # Destroy线程执行的间隔时间, 当连接空闲时间大于min-evictable-idle-time-millis时会被关闭
       # 也是test-while-idle的依据, 如果申请的连接空闲时间大于该参数, 需要检测连接是否有效
-      time-between-eviction-runs-millis: 3000
-      # 一个连接在池中最小生存的时间, 单位是毫秒
-      min-evictable-idle-time-millis: 600000
-      # 个连接在池中最大生存的时间，单位是毫秒
-      max-evictable-idle-time-millis: 900000
+      # 60s
+      time-between-eviction-runs-millis: 60000
+      # 连接保持空闲而不被驱逐的最小时间, 5分钟
+      min-evictable-idle-time-millis: 300000
       # 慢查询
       filter:
         stat:
