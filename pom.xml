@@ -30,7 +30,7 @@
     <spring-cloud-alibaba.version>2021.0.5.0</spring-cloud-alibaba.version>
     <knife4j.version>4.3.0</knife4j.version>
     <springdoc.version>1.7.0</springdoc.version>
-    <druid.version>1.2.22</druid.version>
+    <druid.version>1.2.21</druid.version>
     <mybatis-plus.version>3.5.5</mybatis-plus.version>
     <rocketmq-boot.version>2.2.2</rocketmq-boot.version>
     <rocketmq.version>4.9.4</rocketmq.version>
